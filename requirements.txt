@@ -1,0 +1,28 @@
+# AI-Analyzer - Medical Diagnosis Pipeline
+# Reference: https://www.krishnaik.in/project/medical-diagnosis-app
+
+# API
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+
+# NLP (for Stage 1 - NER)
+# Uncomment when integrating Medical NER:
+# transformers>=4.36.0
+# torch>=2.1.0
+# spacy>=3.7.0
+# scispacy  # Medical NER models
+
+# ML (for Stage 4 - Risk Model)
+# Uncomment when training models:
+# xgboost>=2.0.0
+# lightgbm>=4.2.0
+# scikit-learn>=1.4.0
+
+# LLM (for Stage 5)
+groq>=0.4.0
+openai>=1.12.0
+google-genai>=1.0.0
+python-dotenv>=1.0.0
+
+# Utils
+pydantic>=2.5.0
