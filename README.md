@@ -33,9 +33,11 @@ api/         → FastAPI routes
 src/         → Pipeline (extraction, ontology, features, risk, llm)
 scripts/     → NER training
 data/        → Training data
-models/      → Trained NER model (gitignored)
+models/      → Trained models (not included in repo)
 docs/        → Documentation
 ```
+
+> **Note:** The `models/` folder is **not included** in this repository (gitignored due to size ~1.5 GB). You must obtain or train the models separately to run the full pipeline. See Phase 1 section below for NER training instructions.
 
 ---
 
