@@ -2,8 +2,6 @@
 
 **By CepiaLabs** — An intelligent medical research and diagnostic pipeline.
 
-Reference: [Krish Naik - Medical Diagnosis App](https://www.krishnaik.in/project/medical-diagnosis-app)
-
 ---
 
 ## Objectives
