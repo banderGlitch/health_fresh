@@ -28,3 +28,9 @@ Thumbs.db
 
 # NER training outputs (optional - remove to commit model)
 models/
+
+# Scripts, docs, tests, changelog
+scripts/
+docs/
+tests/
+CHANGELOG.md

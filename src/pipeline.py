@@ -6,8 +6,8 @@ Flow: Conversation -> NER -> Ontology -> Features -> Risk Model -> LLM -> Final 
 Each request passes through 5 stages:
   1. NER: Extract symptoms, duration, severity, negations from free text
   2. Ontology: Map symptoms to SNOMED codes for standardisation
-  3. Features: Build numeric/ categorical features for the risk model
-  4. Risk Model: Predict risk score and triage (OTC vs Doctor)
+  3. Features: Build numeric/categorical features for the risk model
+  4. Risk Model: Finetuned triage (OTC|Doctor|Emergency) or SYNAPSE fallback
   5. LLM: Generate clarification questions for the patient
 """
 
@@ -59,7 +59,7 @@ class AIAnalyzerPipeline:
         self.ontology = OntologyMapper()
         # Phase 3: Build feature dict (symptom counts, severity, red flags, demographics)
         self.feature_builder = FeatureBuilder()
-        # Phase 4: SYNAPSE RandomForest for OTC vs Doctor; heuristic fallback
+        # Phase 4: Finetuned triage (3-way) or SYNAPSE (2-way); heuristic fallback
         self.risk_predictor = RiskPredictor()
         # Phase 5: LLM (OpenAI/Groq/Gemini) for clarification questions
         self.llm_reasoner = LLMReasoner()
@@ -110,8 +110,7 @@ class AIAnalyzerPipeline:
         _log_features(features)
 
         # --- Phase 4: Risk prediction ---
-        # SYNAPSE model: symptom_text + demographics -> OTC Drug or Doctor Consultation
-        # Heuristic fallback if model not loaded
+        # Finetuned triage (OTC|Doctor|Emergency) or SYNAPSE (OTC|Doctor); heuristic fallback
         risk_output = self.risk_predictor.predict(features)
 
         # Real-time log: prediction

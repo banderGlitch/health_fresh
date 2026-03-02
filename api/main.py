@@ -39,7 +39,7 @@ except ImportError:
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Pipeline: NER -> Ontology -> Features -> Risk Model (SYNAPSE) -> LLM
+# Pipeline: NER -> Ontology -> Features -> Risk Model (finetuned/SYNAPSE) -> LLM
 from src.pipeline import AIAnalyzerPipeline
 from src.extraction import MLNERExtractor  # ML-based (DistilBERT); use NERExtractor for rule-based
 from src.llm_reasoning import LLMReasoner
