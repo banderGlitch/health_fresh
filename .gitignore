@@ -26,6 +26,9 @@ build/
 .DS_Store
 Thumbs.db
 
+# Models (large files - 1.5GB, don't push)
+models/
+
 # Scripts, docs, tests, changelog
 scripts/
 docs/
