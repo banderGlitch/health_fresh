@@ -1,10 +1,11 @@
 """
 Stage 1: Structured NLP Extraction
-- Medical NER for symptoms, duration, severity
-- Pattern rules for units & time
-- Negation detection
+- ML: in-house trained DistilBERT (symptom spans)
+- Rule-based: duration, severity, negation (post-processing)
+- Fallback: NERExtractor (rule-based, lexicon+regex)
 """
 
-from .ner_extractor import NERExtractor
+from .ml_ner_extractor import MLNERExtractor
+from .ner_extractor import NERExtractor  # Rule-based; comment in pipeline/api to use
 
-__all__ = ["NERExtractor"]
+__all__ = ["MLNERExtractor", "NERExtractor"]

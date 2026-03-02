@@ -1,36 +1,57 @@
 """
 FastAPI entry point for AI-Analyzer.
-Reference: Krish Naik Medical Diagnosis App
+Medical Diagnosis Pipeline by CepiaLabs.
+Reference: Krish Naik - Medical Diagnosis App
+
+Endpoints:
+  POST /analyze       - Full pipeline (conversation + demographics -> risk, triage, clarification)
+  POST /analyze/continue - Answer clarifications; re-run with combined context
+  POST /extract       - Phase 1 only (NER extraction)
+  GET  /health       - API status, LLM config
 """
 
+import logging
+import sys
 import uuid
 from pathlib import Path
-import sys
+from typing import Any
 
-# Load .env before other imports (for OPENAI_API_KEY)
+# Fix: Uvicorn leaves custom loggers at WARNING by default, so INFO logs get filtered.
+# Force root + our loggers to INFO so [NER], [FEATURES], [CLARIFICATION] etc. show
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+    force=True,
+)
+for _name in ("src.pipeline", "src.llm_reasoning", "api.main"):
+    logging.getLogger(_name).setLevel(logging.INFO)
+
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+
+# Load .env before imports (API keys)
 try:
     from dotenv import load_dotenv
-    project_root = Path(__file__).resolve().parent.parent
-    load_dotenv(project_root / ".env")
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 except ImportError:
     pass
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Any
-
+# Pipeline: NER -> Ontology -> Features -> Risk Model (SYNAPSE) -> LLM
 from src.pipeline import AIAnalyzerPipeline
-from src.extraction import NERExtractor
+from src.extraction import MLNERExtractor  # ML-based (DistilBERT); use NERExtractor for rule-based
+from src.llm_reasoning import LLMReasoner
 
 app = FastAPI(title="AI-Analyzer", description="Medical Diagnosis Pipeline by CepiaLabs")
+llm_reasoner = LLMReasoner()
 pipeline = AIAnalyzerPipeline()
-extractor = NERExtractor()
+extractor = MLNERExtractor()
 
-# In-memory session store: session_id -> { conversation, demographics, history }
-# For production, use Redis or a database
+# Sessions: store conversation + demographics for /analyze/continue (in-memory; use Redis/DB in prod)
 sessions: dict[str, dict[str, Any]] = {}
+_api_logger = logging.getLogger("api.main")
 
 
 @app.on_event("startup")
@@ -58,18 +79,23 @@ class ContinueRequest(BaseModel):
 
 @app.post("/analyze")
 def analyze(request: AnalyzeRequest):
-    """Run full pipeline. Returns session_id for follow-up answers."""
+    """Run full pipeline: NER -> Ontology -> Features -> Risk -> LLM. Returns session_id for /analyze/continue."""
+    _api_logger.info("[ANALYZE] conversation=%d chars, demographics=%s", len(request.conversation), request.demographics)
     result = pipeline.run(
         conversation=request.conversation,
         demographics=request.demographics,
         history=request.history,
     )
     session_id = str(uuid.uuid4())
+    questions = result.get("llm_clarification", {}).get("clarifying_questions", [])
     sessions[session_id] = {
         "conversation": request.conversation,
         "demographics": request.demographics or {},
         "history": request.history or {},
+        "clarifying_questions": questions,
     }
+    _api_logger.info("[ANALYZE] session_id=%s, triage=%s, questions=%d", session_id,
+                     result.get("triage_recommendation"), len(questions))
     result["session_id"] = session_id
     return result
 
@@ -78,20 +104,39 @@ def analyze(request: AnalyzeRequest):
 def analyze_continue(request: ContinueRequest):
     """
     Answer clarifying questions and re-run pipeline with full context.
-    Combines original conversation + your answers, then re-extracts and re-analyzes.
+    Uses LLM merge: rewrites original + Q&A into a clear narrative before re-extraction.
+    Fallback: simple append if LLM unavailable.
     """
     if request.session_id not in sessions:
         raise HTTPException(status_code=404, detail="Session not found. Start with POST /analyze first.")
     session = sessions[request.session_id]
-    # Append answers to conversation (maintains full context)
-    combined = f"{session['conversation']}\n\nPatient clarification: {request.answers}"
+    questions = session.get("clarifying_questions", [])
+
+    _api_logger.info("[CONTINUE] session=%s, answers=%d chars, stored_questions=%d",
+                     request.session_id[:8], len(request.answers), len(questions))
+
+    # LLM merge: rewrite into clear clinical narrative for better NER extraction
+    if llm_reasoner.client and questions:
+        _api_logger.info("[CONTINUE] Using LLM merge")
+        combined = llm_reasoner.merge_clarification(
+            conversation=session["conversation"],
+            clarifying_questions=questions,
+            patient_answers=request.answers,
+        )
+    else:
+        _api_logger.info("[CONTINUE] Fallback: simple append (LLM=%s, questions=%d)", llm_reasoner.client, len(questions))
+        combined = f"{session['conversation']}\n\nPatient clarification: {request.answers}"
+
+    _api_logger.info("[CONTINUE] Re-running pipeline on merged text (%d chars)", len(combined))
     result = pipeline.run(
         conversation=combined,
         demographics=session.get("demographics"),
         history=session.get("history"),
     )
-    # Update stored conversation for further follow-ups
+    _api_logger.info("[CONTINUE] Done. triage=%s, severity=%s", result.get("triage_recommendation"), result.get("severity"))
+    # Update session for further follow-ups
     sessions[request.session_id]["conversation"] = combined
+    sessions[request.session_id]["clarifying_questions"] = result.get("llm_clarification", {}).get("clarifying_questions", [])
     result["session_id"] = request.session_id
     return result
 
@@ -113,15 +158,15 @@ def extract_phase1(request: ExtractRequest):
 
 @app.get("/health")
 def health():
-    """Health check + LLM status."""
+    """Health check: API status, LLM config, NER mode."""
     try:
         from src.llm_reasoning import LLMReasoner
-        r = LLMReasoner()
-        llm_ok = r.client is not None
+        llm_ok = LLMReasoner().client is not None
     except Exception:
         llm_ok = False
     return {
         "status": "ok",
         "llm_configured": llm_ok,
-        "version": "2.0",
+        "ner_mode": "ml",
+        "version": "2.1",
     }

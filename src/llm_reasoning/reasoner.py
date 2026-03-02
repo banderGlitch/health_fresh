@@ -6,6 +6,9 @@ Supports: Groq (free), Gemini, OpenAI.
 """
 
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 import os
 from pathlib import Path
 from typing import Any
@@ -176,7 +179,69 @@ Respond in this exact JSON format only:
                 "risk_output": risk_output,
             }
 
+    def merge_clarification(
+        self,
+        conversation: str,
+        clarifying_questions: list[str],
+        patient_answers: str,
+    ) -> str:
+        """
+        Merge original conversation + Q&A into a clear clinical narrative.
+        Ensures answers (e.g. "3 days", "mild") are correctly linked to symptoms
+        so NER can extract structured data.
+        """
+        logger.info("[CLARIFICATION] Merge requested: original=%d chars, %d questions, answers=%d chars",
+                    len(conversation), len(clarifying_questions), len(patient_answers))
 
+        if not self.client:
+            logger.info("[CLARIFICATION] LLM unavailable, using simple append")
+            return f"{conversation}\n\nPatient clarification: {patient_answers}"
 
+        q_list = "\n".join(f"- {q}" for q in clarifying_questions) if clarifying_questions else "(no specific questions)"
 
+        prompt = f"""You are a clinical scribe. Merge the patient's initial complaint and their answers into ONE clear clinical narrative.
+
+STRICT RULES:
+1. Link each answer to the right question: "3 days" → duration for symptoms, "mild"/"moderate"/"severe" → severity.
+2. Phrase explicitly: "fever and headache for 3 days", "mild severity", "runny nose for a week".
+3. Use exact words NER expects: symptom names (fever, headache, cough), duration ("3 days", "a week", "2 weeks"), severity ("mild", "moderate", "severe").
+4. One coherent paragraph. No bullets, no JSON, no "Summary:" or "The patient...". Just the narrative.
+5. Do NOT add diagnoses, suggestions, or questions. Only the merged symptom description.
+
+Example output: "Patient has fever and mild headache for 3 days. Cough and runny nose for about a week. No other symptoms."
+
+---
+Original conversation:
+{conversation}
+
+---
+Questions asked:
+{q_list}
+
+---
+Patient answers:
+{patient_answers}
+
+---
+Merged narrative:"""
+
+        logger.info("[CLARIFICATION] Merge prompt (%d chars):\n%s", len(prompt), prompt)
+
+        try:
+            if self._groq_client:
+                content = self._call_groq(prompt)
+            elif self._gemini_client:
+                content = self._call_gemini(prompt)
+            else:
+                content = self._call_openai(prompt)
+            merged = content.strip()
+            # Remove quotes if LLM wrapped in them
+            if merged.startswith('"') and merged.endswith('"'):
+                merged = merged[1:-1]
+            result = merged if merged else f"{conversation}\n\nPatient clarification: {patient_answers}"
+            logger.info("[CLARIFICATION] LLM merged output (%d chars): %s", len(result), result[:200] + ("..." if len(result) > 200 else ""))
+            return result
+        except Exception as e:
+            logger.warning("[CLARIFICATION] LLM merge failed: %s, using simple append", e)
+            return f"{conversation}\n\nPatient clarification: {patient_answers}"
 

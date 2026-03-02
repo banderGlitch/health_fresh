@@ -1,12 +1,13 @@
 """
 Stage 2: Ontology Mapping
-Maps patient terms to standard medical concepts (e.g., SNOMED CT).
+
+Maps extracted symptoms to SNOMED CT codes.
+Extend SNOMED_SYMPTOM_MAP for production use.
 """
 
 from typing import Any
 
-
-# Example SNOMED mappings - extend with full ontology in production
+# SNOMED CT symptom mappings (code, canonical name)
 SNOMED_SYMPTOM_MAP = {
     "fever": ("386661006", "Fever"),
     "pyrexia": ("386661006", "Fever"),
@@ -40,12 +41,13 @@ class OntologyMapper:
         return None
 
     def map_extraction_result(self, extraction_output: dict[str, Any]) -> list[dict[str, Any]]:
-        """Map all symptoms from extraction stage to ontology."""
+        """Map all symptoms from NER extraction to SNOMED. Unmapped symptoms are excluded from list."""
         mapped = []
         for s in extraction_output.get("symptoms", []):
             name = s.get("name", "")
             result = self.map_symptom(name)
             if result:
+                # Preserve duration/severity from NER
                 result["duration"] = s.get("duration")
                 result["severity"] = s.get("severity")
                 mapped.append(result)

@@ -1,0 +1,6 @@
+# NER training - install with: pip install -r requirements-ner.txt
+transformers>=4.36.0
+torch>=2.0.0
+datasets>=2.16.0
+evaluate>=0.4.0
+seqeval>=1.2.2

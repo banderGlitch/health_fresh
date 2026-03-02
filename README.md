@@ -28,20 +28,15 @@ Conversation → NER Extraction → Ontology Mapping → Feature Builder → Ris
 
 ## Project Structure
 
+See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for full layout.
+
 ```
-cepialabs_health_care/
-├── src/
-│   ├── extraction/      # Stage 1: NER + pattern rules + negation
-│   ├── ontology/        # Stage 2: SNOMED mapping
-│   ├── features/        # Stage 3: Feature builder
-│   ├── risk_model/      # Stage 4: Probabilistic inference
-│   ├── llm_reasoning/   # Stage 5: LLM clarification
-│   └── pipeline.py     # Orchestrator
-├── api/
-│   └── main.py          # FastAPI server
-├── docs/
-│   └── PIPELINE.md      # Detailed pipeline docs
-└── requirements.txt
+api/         → FastAPI routes
+src/         → Pipeline (extraction, ontology, features, risk, llm)
+scripts/     → NER training
+data/        → Training data
+models/      → Trained NER model (gitignored)
+docs/        → Documentation
 ```
 
 ---
@@ -72,9 +67,22 @@ curl -X POST http://localhost:8000/analyze \
 
 ---
 
+## Phase 1 – ML NER (v2.1)
+
+Phase 1 now uses an **in-house trained DistilBERT** model for symptom extraction:
+
+- **Model:** Fine-tuned token classification (B-SYMPTOM, I-SYMPTOM, O)
+- **Data:** Synthetic training data from symptom lexicon
+- **Performance:** ~99.7% F1 on validation
+- **Duration/severity/negation:** Still handled by rule-based post-processing
+
+To retrain: `python scripts/prepare_ner_data.py` then `python scripts/train_ner.py`.
+
+---
+
 ## Next Steps
 
-1. **Stage 1:** Integrate Medical NER (BioBERT, ClinicalBERT, or custom model)
+1. ~~**Stage 1:** Integrate Medical NER~~ ✅ Done (in-house DistilBERT)
 2. **Stage 2:** Add full SNOMED CT / UMLS ontology
 3. **Stage 4:** Train risk model on symptom-disease datasets
 4. **Stage 5:** Connect OpenAI GPT-4 or local LLM

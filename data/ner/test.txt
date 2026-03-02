@@ -1,0 +1,4900 @@
+I	O
+have	O
+dry	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+headache	B-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+nauseous	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+swelling	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+hemoptysis	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+migraine	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+not	B-SYMPTOM
+hungry	I-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+loose	B-SYMPTOM
+stools.	I-SYMPTOM
+
+I	O
+have	O
+shortness	B-SYMPTOM
+of	I-SYMPTOM
+breath	I-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+temp	B-SYMPTOM
+and	O
+no	B-SYMPTOM
+appetite	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+oedema	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+fast	B-SYMPTOM
+heartbeat	I-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+head	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+stool	I-SYMPTOM
+and	O
+eye	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+throwing	B-SYMPTOM
+up	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+night	B-SYMPTOM
+sweats	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+dizziness.	O
+
+No	O
+dizzy.	O
+
+I	O
+have	O
+sweating	B-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+diarrhea	B-SYMPTOM
+with	O
+chest	B-SYMPTOM
+discomfort.	I-SYMPTOM
+
+I	O
+have	O
+queasy	B-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+tightness	I-SYMPTOM
+and	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+burning	B-SYMPTOM
+chest	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+sore	O
+eyes.	O
+
+I	O
+have	O
+mild	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+severe	O
+difficulty	B-SYMPTOM
+sleeping.	I-SYMPTOM
+
+Main	O
+complaint	O
+is	O
+vomit.	B-SYMPTOM
+
+I	O
+have	O
+mild	O
+fast	B-SYMPTOM
+heartbeat	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+severe	O
+coughing	B-SYMPTOM
+blood.	I-SYMPTOM
+
+I	O
+have	O
+feverish	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+edema	B-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+throwing	B-SYMPTOM
+up	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+feverish	B-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+pain	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+rectal	B-SYMPTOM
+bleeding	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+mild	O
+ear	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+severe	O
+muscle	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I've	O
+been	O
+having	O
+light-headed.	B-SYMPTOM
+
+I	O
+have	O
+body	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+pyrexia	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+earache	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+night	B-SYMPTOM
+sweats	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+Patient	O
+presents	O
+with	O
+rhinorrhea.	B-SYMPTOM
+
+I	O
+have	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+insomnia.	B-SYMPTOM
+
+I	O
+have	O
+edema	B-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+vision	B-SYMPTOM
+problems	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+weakness	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+eye	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+diarrhoea	B-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+rectal	B-SYMPTOM
+bleeding	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+puking	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+irregular	B-SYMPTOM
+heartbeat	I-SYMPTOM
+since	O
+yesterday.	O
+
+Experiencing	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+muscle	B-SYMPTOM
+ache	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+severe	O
+stomach	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+runny	B-SYMPTOM
+nose	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+weight	B-SYMPTOM
+loss	I-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+nauseous	B-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+loose	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+cough	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+Experiencing	O
+dizziness	B-SYMPTOM
+since	O
+yesterday.	O
+
+Experiencing	O
+headache	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe	I-SYMPTOM
+and	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+sweats	B-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+tired	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+breathlessness	B-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+shortness	B-SYMPTOM
+of	I-SYMPTOM
+breath	I-SYMPTOM
+and	O
+joint	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+shivers	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+moderate	O
+fatigue.	B-SYMPTOM
+
+I	O
+have	O
+trouble	B-SYMPTOM
+breathing	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+rectal	B-SYMPTOM
+bleeding	I-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+tightness	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+throwing	B-SYMPTOM
+up	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+severe	O
+rash.	B-SYMPTOM
+
+I	O
+have	O
+eye	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+sleeplessness	B-SYMPTOM
+and	O
+weakness	B-SYMPTOM
+and	O
+fatigue.	O
+
+I've	O
+been	O
+having	O
+difficulty	B-SYMPTOM
+sleeping.	I-SYMPTOM
+
+I	O
+have	O
+tiredness	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+tired	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+Main	O
+complaint	O
+is	O
+trouble	B-SYMPTOM
+breathing.	I-SYMPTOM
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+head	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+eye	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I've	O
+been	O
+having	O
+night	B-SYMPTOM
+sweats.	I-SYMPTOM
+
+I	O
+have	O
+migraine	B-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+tiredness	B-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+reduced	B-SYMPTOM
+appetite	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+diarrhea	B-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+tiredness.	B-SYMPTOM
+
+I	O
+have	O
+night	B-SYMPTOM
+sweats	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+fever	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe	I-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+palpitations	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+hemoptysis	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+moderate	O
+night	B-SYMPTOM
+sweats.	I-SYMPTOM
+
+I	O
+have	O
+myalgia	B-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+vomit	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+mild	O
+swollen.	B-SYMPTOM
+
+I	O
+have	O
+sweating	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+tightness	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+severe	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+eye	B-SYMPTOM
+pain	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+burning	B-SYMPTOM
+chest	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+ache	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+belly	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+head	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+dizzy	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+throwing	B-SYMPTOM
+up	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+eruption	B-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+stool	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+Main	O
+complaint	O
+is	O
+perspiration.	B-SYMPTOM
+
+I	O
+have	O
+belly	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+losing	B-SYMPTOM
+weight	I-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+tiredness	B-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+eye	B-SYMPTOM
+discomfort	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+severe	O
+edema.	B-SYMPTOM
+
+I	O
+have	O
+moderate	O
+joint	B-SYMPTOM
+pain.	I-SYMPTOM
+
+No	O
+dry	O
+cough.	O
+
+I	O
+have	O
+earache	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+breathlessness	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+temp	B-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+oedema	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+sleeplessness	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+loose	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+oedema	B-SYMPTOM
+and	O
+exhaustion	B-SYMPTOM
+and	O
+nausea.	O
+
+I	O
+have	O
+light-headed	B-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I've	O
+been	O
+having	O
+chest	B-SYMPTOM
+tightness.	I-SYMPTOM
+
+I	O
+have	O
+mild	O
+stomach	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+mild	O
+weakness.	B-SYMPTOM
+
+I	O
+have	O
+mild	O
+vertigo.	B-SYMPTOM
+
+I	O
+have	O
+migraine	B-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+stomachache	B-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I've	O
+had	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+sleeplessness	B-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+moderate	O
+back	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+lethargy	B-SYMPTOM
+and	O
+dizziness.	O
+
+I've	O
+been	O
+having	O
+running	B-SYMPTOM
+a	I-SYMPTOM
+temperature.	I-SYMPTOM
+
+I	O
+have	O
+mild	O
+throat	B-SYMPTOM
+hurts.	I-SYMPTOM
+
+Patient	O
+presents	O
+with	O
+joint	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+arthralgia	B-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+runny	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+burning	B-SYMPTOM
+chest	I-SYMPTOM
+and	O
+hemoptysis	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+Main	O
+complaint	O
+is	O
+loss	B-SYMPTOM
+of	I-SYMPTOM
+appetite.	I-SYMPTOM
+
+Patient	O
+presents	O
+with	O
+aches.	B-SYMPTOM
+
+I	O
+have	O
+perspiration	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+aches	B-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+Main	O
+complaint	O
+is	O
+stomach	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+tiredness	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe	I-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+difficulty	B-SYMPTOM
+breathing	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+loose	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+sleeplessness	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+Experiencing	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+vision	B-SYMPTOM
+problems	I-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+difficulty	B-SYMPTOM
+breathing	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+weight	B-SYMPTOM
+loss	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+chills	B-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+muscle	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+tired	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+mild	O
+chest	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+not	B-SYMPTOM
+hungry	I-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+myalgia	B-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe.	I-SYMPTOM
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+severe	O
+pharyngitis.	B-SYMPTOM
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+cough	I-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+reduced	B-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+muscle	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+eye	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I	O
+have	O
+throwing	B-SYMPTOM
+up	I-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+sleeplessness.	B-SYMPTOM
+
+I've	O
+been	O
+having	O
+joint	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+head	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+difficulty	B-SYMPTOM
+breathing	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+stuffy	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+palpitations	B-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+temp	B-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+Main	O
+complaint	O
+is	O
+rhinorrhea.	B-SYMPTOM
+
+Patient	O
+presents	O
+with	O
+stuffy	B-SYMPTOM
+nose.	I-SYMPTOM
+
+I've	O
+had	O
+dyspnea	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+loss	B-SYMPTOM
+of	I-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+stomachache	B-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+fever	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I've	O
+had	O
+diarrhea	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+mild	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+severe	O
+temp.	B-SYMPTOM
+
+I	O
+have	O
+body	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+mild	O
+heart	B-SYMPTOM
+racing	I-SYMPTOM
+and	O
+severe	O
+sore	B-SYMPTOM
+throat.	I-SYMPTOM
+
+I	O
+have	O
+headache	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+shivers	B-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+moderate	O
+stuffy	B-SYMPTOM
+nose.	I-SYMPTOM
+
+I	O
+have	O
+rhinorrhea	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+no	B-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+mild	O
+trouble	B-SYMPTOM
+breathing	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+mild	O
+dry	B-SYMPTOM
+cough.	I-SYMPTOM
+
+I	O
+have	O
+dizzy	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+fatigue	B-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+queasy	B-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+dizzy	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+mild	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+exhaustion	B-SYMPTOM
+and	O
+aches.	B-SYMPTOM
+
+I	O
+have	O
+puking	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+aches	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+cough	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+earache	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+perspiration	B-SYMPTOM
+with	O
+losing	B-SYMPTOM
+weight.	I-SYMPTOM
+
+I	O
+have	O
+heart	B-SYMPTOM
+racing	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I've	O
+been	O
+having	O
+shivers.	B-SYMPTOM
+
+I	O
+have	O
+body	B-SYMPTOM
+ache	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+chills	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+moderate	O
+blurry	B-SYMPTOM
+vision.	I-SYMPTOM
+
+I	O
+have	O
+head	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+moderate	O
+tiredness.	B-SYMPTOM
+
+I've	O
+been	O
+having	O
+weight	B-SYMPTOM
+loss.	I-SYMPTOM
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+feverish.	O
+
+I	O
+have	O
+severe	O
+rhinorrhea.	B-SYMPTOM
+
+I	O
+have	O
+diarrhoea	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+difficulty	B-SYMPTOM
+sleeping	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+queasy	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+blood	I-SYMPTOM
+and	O
+pharyngitis	B-SYMPTOM
+and	O
+fatigue.	O
+
+I've	O
+had	O
+nauseous	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+runny	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+runny	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+dizzy	B-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+breathlessness	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+stomachache	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe	I-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+severe	O
+bloody	B-SYMPTOM
+stool.	I-SYMPTOM
+
+I	O
+have	O
+loose	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+emesis	B-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+sweating	B-SYMPTOM
+and	O
+trouble	B-SYMPTOM
+breathing	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+pyrexia.	B-SYMPTOM
+
+I	O
+have	O
+eye	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+dizzy	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+fatigue	B-SYMPTOM
+and	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+tightness	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+severe	O
+trouble	B-SYMPTOM
+breathing.	I-SYMPTOM
+
+Main	O
+complaint	O
+is	O
+running	B-SYMPTOM
+a	I-SYMPTOM
+temperature.	I-SYMPTOM
+
+I	O
+have	O
+eruption	B-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+stool	I-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+head	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+severe	O
+weight	B-SYMPTOM
+loss.	I-SYMPTOM
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+vomit	B-SYMPTOM
+and	O
+queasy	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+stomachache	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+cough	I-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+shivers	B-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+severe	O
+abdominal	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+chills	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+sweating	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+ache	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+mild	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+trouble	B-SYMPTOM
+breathing	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+hacking	B-SYMPTOM
+cough	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+palpitations	B-SYMPTOM
+and	O
+nausea.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+pain	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+backache	B-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+rash	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+No	O
+blood	O
+in	O
+cough.	O
+
+I	O
+have	O
+dry	B-SYMPTOM
+cough	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I've	O
+been	O
+having	O
+head	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+nasal	B-SYMPTOM
+congestion	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+not	B-SYMPTOM
+hungry	I-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+rectal	B-SYMPTOM
+bleeding	I-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+Patient	O
+presents	O
+with	O
+shivers.	B-SYMPTOM
+
+I	O
+have	O
+cough	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+mild	O
+high	B-SYMPTOM
+temperature.	I-SYMPTOM
+
+I	O
+have	O
+chills	B-SYMPTOM
+and	O
+not	B-SYMPTOM
+hungry	I-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I've	O
+had	O
+irregular	B-SYMPTOM
+heartbeat	I-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+mild	O
+loss	B-SYMPTOM
+of	I-SYMPTOM
+appetite	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+lethargy	B-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+stuffy	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+eye	O
+pain.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+ache	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+light-headed	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I've	O
+had	O
+oedema	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+losing	B-SYMPTOM
+weight	I-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+rash	B-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+severe	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+backache	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+eruption	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I've	O
+had	O
+diarrhoea	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+Main	O
+complaint	O
+is	O
+can't	B-SYMPTOM
+breathe.	I-SYMPTOM
+
+I've	O
+been	O
+having	O
+vomit.	B-SYMPTOM
+
+Patient	O
+presents	O
+with	O
+joint	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+moderate	O
+swollen.	B-SYMPTOM
+
+I	O
+have	O
+stomachache	B-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+oedema	B-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+night	B-SYMPTOM
+sweats	I-SYMPTOM
+and	O
+chills.	O
+
+I've	O
+been	O
+having	O
+nauseated.	B-SYMPTOM
+
+I	O
+have	O
+throat	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+hemoptysis	B-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+myalgia	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+nausea	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+severe	O
+hemoptysis	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+chills.	B-SYMPTOM
+
+I've	O
+been	O
+having	O
+swelling.	B-SYMPTOM
+
+I	O
+have	O
+shivering	B-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+moderate	O
+body	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+joint	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+swelling	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+rash	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+severe	O
+chest	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+stool	I-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+lethargy	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+with	O
+losing	B-SYMPTOM
+weight.	I-SYMPTOM
+
+I	O
+have	O
+irregular	B-SYMPTOM
+heartbeat	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+blocked	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+loss	B-SYMPTOM
+of	I-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+puking	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+hemoptysis	B-SYMPTOM
+and	O
+emesis	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+stool	I-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+nauseated	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+rhinorrhea	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+cough	B-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+dizziness	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+irregular	B-SYMPTOM
+heartbeat	I-SYMPTOM
+and	O
+nausea.	O
+
+I	O
+have	O
+insomnia	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+diarrhoea	B-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+No	O
+fast	O
+heartbeat.	O
+
+I	O
+have	O
+moderate	O
+feeling	B-SYMPTOM
+tired.	I-SYMPTOM
+
+I	O
+have	O
+joint	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+palpitations.	O
+
+I've	O
+had	O
+sweats	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+pharyngitis	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+lightheaded	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+head	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+ache	I-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+swelling	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+cough	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+headache	B-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+vertigo.	B-SYMPTOM
+
+I	O
+have	O
+moderate	O
+headache.	B-SYMPTOM
+
+I	O
+have	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+cough	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+pyrexia	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+hacking	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+eyes.	I-SYMPTOM
+
+I	O
+have	O
+fatigue	B-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+severe	O
+heart	B-SYMPTOM
+racing	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+Patient	O
+presents	O
+with	O
+fast	B-SYMPTOM
+heartbeat.	I-SYMPTOM
+
+I	O
+have	O
+coughing	B-SYMPTOM
+blood	I-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+mild	O
+exhaustion.	B-SYMPTOM
+
+I	O
+have	O
+moderate	O
+runny	B-SYMPTOM
+nose.	I-SYMPTOM
+
+I	O
+have	O
+aches	B-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+hacking	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+eye	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+rectal	B-SYMPTOM
+bleeding.	I-SYMPTOM
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+myalgia	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+sweats	B-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+dizziness	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+burning	B-SYMPTOM
+chest	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+nauseated	B-SYMPTOM
+and	O
+palpitations.	O
+
+I	O
+have	O
+abdominal	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+diarrhea	B-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+blocked	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+back	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+fatigue	B-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+and	O
+eruption	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+insomnia	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+backache	B-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+shivering	B-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+eruption.	B-SYMPTOM
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+and	O
+pyrexia	B-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I	O
+have	O
+weight	B-SYMPTOM
+loss	I-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+shortness	B-SYMPTOM
+of	I-SYMPTOM
+breath	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+blocked	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+mild	O
+nausea	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+high	B-SYMPTOM
+temperature	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+losing	B-SYMPTOM
+weight.	I-SYMPTOM
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+moderate	O
+earache.	B-SYMPTOM
+
+I	O
+have	O
+high	B-SYMPTOM
+temperature	I-SYMPTOM
+and	O
+insomnia.	O
+
+I've	O
+had	O
+running	B-SYMPTOM
+a	I-SYMPTOM
+temperature	I-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+muscle	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+earache	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+dizzy	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+earache	B-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I've	O
+been	O
+having	O
+sleeplessness.	B-SYMPTOM
+
+No	O
+diarrhea.	O
+
+I	O
+have	O
+sweating	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+feverish	B-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+Main	O
+complaint	O
+is	O
+pharyngitis.	B-SYMPTOM
+
+I	O
+have	O
+edema	B-SYMPTOM
+and	O
+swelling.	O
+
+I've	O
+had	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+mild	O
+throat	B-SYMPTOM
+pain.	I-SYMPTOM
+
+I	O
+have	O
+moderate	O
+watery	B-SYMPTOM
+stools.	I-SYMPTOM
+
+I	O
+have	O
+diarrhoea	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+fatigue	B-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+trouble	B-SYMPTOM
+breathing	I-SYMPTOM
+and	O
+body	O
+ache.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+moderate	O
+blocked	B-SYMPTOM
+nose.	I-SYMPTOM
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+severe	O
+diarrhoea	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+weight	B-SYMPTOM
+loss	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+rhinorrhea	B-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+irregular	B-SYMPTOM
+heartbeat	I-SYMPTOM
+and	O
+headache.	O
+
+I	O
+have	O
+moderate	O
+queasy.	B-SYMPTOM
+
+Patient	O
+presents	O
+with	O
+dyspnea.	B-SYMPTOM
+
+I	O
+have	O
+feverish	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I've	O
+been	O
+having	O
+breathlessness.	B-SYMPTOM
+
+I	O
+have	O
+nasal	B-SYMPTOM
+congestion	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+tightness	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+and	O
+queasy	B-SYMPTOM
+since	O
+yesterday.	O
+
+I've	O
+had	O
+exhaustion	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+vomit	B-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+mild	O
+fever.	B-SYMPTOM
+
+I	O
+have	O
+stuffy	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+shortness	B-SYMPTOM
+of	I-SYMPTOM
+breath	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+migraine	B-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+losing	O
+weight.	O
+
+I	O
+have	O
+muscle	B-SYMPTOM
+ache	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+with	O
+throwing	B-SYMPTOM
+up.	I-SYMPTOM
+
+I	O
+have	O
+severe	O
+lethargy.	B-SYMPTOM
+
+No	O
+nauseous.	O
+
+I	O
+have	O
+lightheaded	B-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+myalgia.	B-SYMPTOM
+
+I	O
+have	O
+chest	B-SYMPTOM
+ache	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+vision	B-SYMPTOM
+problems	I-SYMPTOM
+and	O
+hemoptysis	B-SYMPTOM
+and	O
+nausea.	O
+
+I	O
+have	O
+moderate	O
+muscle	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+cough	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+Main	O
+complaint	O
+is	O
+nauseous.	B-SYMPTOM
+
+No	O
+chest	O
+pain.	O
+
+Main	O
+complaint	O
+is	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss.	I-SYMPTOM
+
+No	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+tired	I-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+diarrhea	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+fast	B-SYMPTOM
+heartbeat	I-SYMPTOM
+and	O
+rash.	O
+
+I	O
+have	O
+sweats	B-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+moderate	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain.	I-SYMPTOM
+
+No	O
+joint	O
+ache.	O
+
+I	O
+have	O
+mild	O
+difficulty	B-SYMPTOM
+sleeping.	I-SYMPTOM
+
+I	O
+have	O
+feverish	B-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+nasal	B-SYMPTOM
+congestion	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+not	B-SYMPTOM
+hungry	I-SYMPTOM
+and	O
+dizziness.	O
+
+Experiencing	O
+swollen	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+migraine	B-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+mild	O
+back	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+dry	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+cough.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+cough	I-SYMPTOM
+for	O
+2	O
+weeks.	O
+
+I	O
+have	O
+lightheaded	B-SYMPTOM
+and	O
+body	O
+ache.	O
+
+Patient	O
+presents	O
+with	O
+feeling	B-SYMPTOM
+sick.	I-SYMPTOM
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+sweating.	O
+
+I	O
+have	O
+mild	O
+lower	B-SYMPTOM
+back	I-SYMPTOM
+pain	I-SYMPTOM
+and	O
+severe	O
+bloody	B-SYMPTOM
+stool.	I-SYMPTOM
+
+I	O
+have	O
+dyspnea	B-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+bloody	B-SYMPTOM
+stool	I-SYMPTOM
+and	O
+vomiting.	O
+
+I	O
+have	O
+burning	B-SYMPTOM
+chest	I-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe	I-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+not	B-SYMPTOM
+hungry	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+feverish	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pressure	I-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+vertigo	B-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+myalgia	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+irregular	B-SYMPTOM
+heartbeat	I-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+breathe	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+No	O
+swollen.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+blood	I-SYMPTOM
+and	O
+runny	O
+nose.	O
+
+I	O
+have	O
+unintended	B-SYMPTOM
+weight	I-SYMPTOM
+loss	I-SYMPTOM
+with	O
+shivers.	B-SYMPTOM
+
+I	O
+have	O
+moderate	O
+hacking	B-SYMPTOM
+cough.	I-SYMPTOM
+
+I	O
+have	O
+loss	B-SYMPTOM
+of	I-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+reduced	B-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+chills.	O
+
+I've	O
+had	O
+muscle	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+severe	O
+difficulty	B-SYMPTOM
+sleeping	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+tired	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+skin	B-SYMPTOM
+rash	I-SYMPTOM
+and	O
+sleeplessness.	B-SYMPTOM
+
+I	O
+have	O
+nausea	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+joint	O
+pain.	O
+
+I	O
+have	O
+moderate	O
+backache.	B-SYMPTOM
+
+I	O
+have	O
+back	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+eye	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+rhinorrhea	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+hemoptysis	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+runny	B-SYMPTOM
+nose	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+lightheaded	B-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I've	O
+had	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+sore	O
+throat.	O
+
+I	O
+have	O
+stuffy	B-SYMPTOM
+nose	I-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+cephalgia	B-SYMPTOM
+and	O
+diarrhea.	O
+
+No	O
+diarrhoea.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+Patient	O
+presents	O
+with	O
+chest	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+cough	B-SYMPTOM
+and	O
+abdominal	B-SYMPTOM
+pain	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+can't	B-SYMPTOM
+sleep	I-SYMPTOM
+and	O
+fatigue.	O
+
+I've	O
+had	O
+shivers	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+mild	O
+joint	B-SYMPTOM
+ache	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+loose	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+dizziness.	O
+
+I've	O
+been	O
+having	O
+sweats.	B-SYMPTOM
+
+I	O
+have	O
+throat	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+joint	O
+pain.	O
+
+I	O
+have	O
+loss	B-SYMPTOM
+of	I-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+Experiencing	O
+sore	B-SYMPTOM
+eyes	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+with	O
+stomach	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+dyspnea	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+fatigue	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+joint	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+cough	I-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+burning	B-SYMPTOM
+chest	I-SYMPTOM
+and	O
+diarrhea.	O
+
+I	O
+have	O
+emesis	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+pharyngitis	B-SYMPTOM
+and	O
+shivering	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+Experiencing	O
+coughing	B-SYMPTOM
+blood	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+puking	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+moderate	O
+lightheaded.	B-SYMPTOM
+
+I	O
+have	O
+mild	O
+body	B-SYMPTOM
+ache.	I-SYMPTOM
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+headache	B-SYMPTOM
+and	O
+feel	O
+tired.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+abdominal	O
+pain.	O
+
+I	O
+have	O
+lightheaded	B-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+weight	B-SYMPTOM
+loss	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+queasy	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+sick	I-SYMPTOM
+and	O
+chills.	O
+
+Experiencing	O
+difficulty	B-SYMPTOM
+sleeping	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+exhaustion	B-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+mild	O
+swelling	B-SYMPTOM
+for	O
+3	O
+days.	O
+
+I've	O
+been	O
+having	O
+skin	B-SYMPTOM
+rash.	I-SYMPTOM
+
+I	O
+have	O
+joint	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+I	O
+have	O
+shortness	B-SYMPTOM
+of	I-SYMPTOM
+breath	I-SYMPTOM
+and	O
+puking	B-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+headache	O
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+eruption	B-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+perspiration	B-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+feverish	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+watery	B-SYMPTOM
+stools	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+chest	B-SYMPTOM
+tightness	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+muscle	B-SYMPTOM
+ache	I-SYMPTOM
+and	O
+insomnia.	O
+
+I've	O
+had	O
+sweating	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+nasal	B-SYMPTOM
+congestion	I-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+heart	B-SYMPTOM
+racing	I-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+coughing	B-SYMPTOM
+and	O
+chills.	O
+
+I	O
+have	O
+skin	B-SYMPTOM
+rash	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+No	O
+vomiting.	O
+
+I	O
+have	O
+skin	B-SYMPTOM
+rash	I-SYMPTOM
+and	O
+swelling.	O
+
+I	O
+have	O
+blood	B-SYMPTOM
+in	I-SYMPTOM
+stool	I-SYMPTOM
+and	O
+feel	O
+unwell.	O
+
+I	O
+have	O
+hemoptysis	B-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+body	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+high	B-SYMPTOM
+temperature	I-SYMPTOM
+and	O
+ear	O
+pain.	O
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+runny	O
+nose.	O
+
+I	O
+have	O
+eye	B-SYMPTOM
+discomfort	I-SYMPTOM
+and	O
+eye	O
+pain.	O
+
+I	O
+have	O
+sleeplessness	B-SYMPTOM
+with	O
+nausea.	O
+
+I	O
+have	O
+mild	O
+high	B-SYMPTOM
+temperature	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+abdominal	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+ear	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+backache	B-SYMPTOM
+and	O
+fatigue.	O
+
+I	O
+have	O
+palpitations	B-SYMPTOM
+and	O
+cough.	O
+
+I've	O
+been	O
+having	O
+blocked	B-SYMPTOM
+nose.	I-SYMPTOM
+
+I	O
+have	O
+feverish	B-SYMPTOM
+and	O
+sweating.	O
+
+I	O
+have	O
+weakness	B-SYMPTOM
+and	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+nausea.	O
+
+I	O
+have	O
+myalgia	B-SYMPTOM
+and	O
+blurred	O
+vision.	O
+
+Experiencing	O
+dry	B-SYMPTOM
+cough	I-SYMPTOM
+since	O
+yesterday.	O
+
+I	O
+have	O
+fever	O
+but	O
+no	O
+nauseous.	O
+
+Main	O
+complaint	O
+is	O
+fever.	B-SYMPTOM
+
+I	O
+have	O
+fever	B-SYMPTOM
+with	O
+feeling	B-SYMPTOM
+cold.	I-SYMPTOM
+
+I've	O
+had	O
+chills	B-SYMPTOM
+for	O
+a	O
+few	O
+days.	O
+
+I	O
+have	O
+feeling	B-SYMPTOM
+cold	I-SYMPTOM
+and	O
+insomnia.	O
+
+I	O
+have	O
+stomach	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+loss	O
+of	O
+appetite.	O
+
+I	O
+have	O
+severe	O
+pyrexia	B-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+high	B-SYMPTOM
+temperature	I-SYMPTOM
+and	O
+coughing	O
+blood.	O
+
+I	O
+have	O
+nauseous	B-SYMPTOM
+for	O
+5	O
+days.	O
+
+I	O
+have	O
+sore	B-SYMPTOM
+throat	I-SYMPTOM
+and	O
+runny	B-SYMPTOM
+nose	I-SYMPTOM
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+shivering	B-SYMPTOM
+and	O
+fatigue	O
+for	O
+3	O
+days.	O
+
+I	O
+have	O
+throat	B-SYMPTOM
+hurts	I-SYMPTOM
+for	O
+a	O
+week.	O
+
+I	O
+have	O
+high	B-SYMPTOM
+temperature	I-SYMPTOM
+and	O
+blood	O
+in	O
+stool.	O
+
+I	O
+have	O
+puking	B-SYMPTOM
+and	O
+weight	O
+loss.	O
+
+I	O
+have	O
+wet	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+chest	O
+pain.	O
+
+I	O
+have	O
+swollen	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+vomiting	B-SYMPTOM
+and	O
+back	O
+pain.	O
+
+I	O
+have	O
+hacking	B-SYMPTOM
+cough	I-SYMPTOM
+and	O
+losing	B-SYMPTOM
+weight	I-SYMPTOM
+since	O
+yesterday.	O
+
+I've	O
+been	O
+having	O
+wet	B-SYMPTOM
+cough.	I-SYMPTOM
+
+I	O
+have	O
+body	B-SYMPTOM
+pain	I-SYMPTOM
+and	O
+dizziness.	O
+
+I	O
+have	O
+no	B-SYMPTOM
+appetite	I-SYMPTOM
+and	O
+shortness	O
+of	O
+breath.	O
+
+I	O
+have	O
+night	B-SYMPTOM
+sweats	I-SYMPTOM
+since	O
+yesterday.	O
+

@@ -1,6 +1,8 @@
 """
 Stage 3: Feature Builder
-Builds feature vectors from ontology-mapped symptoms + demographics + history.
+
+Builds structured features for Risk Model.
+See docs/RISK_MODEL_FEATURES.md for full spec.
 """
 
 from .builder import FeatureBuilder

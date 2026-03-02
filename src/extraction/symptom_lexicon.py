@@ -1,6 +1,8 @@
 """
 Symptom lexicon for Phase 1 extraction.
-Maps variations to canonical symptom names.
+
+Canonical symptom → list of variations (used by MLNERExtractor for normalization).
+VARIATION_TO_CANONICAL: reverse lookup for get_canonical().
 """
 
 # Canonical symptom -> variations (lowercase)

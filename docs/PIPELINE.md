@@ -56,7 +56,10 @@ Conversation → NER Extraction → Ontology Mapping → Feature Builder → Ris
 }
 ```
 
-**Phase 1 Status:** Implemented — symptom lexicon, pattern rules, negation detection.
+**Phase 1 Status:** Implemented with **ML model (v2.1)**:
+- **Symptom spans:** In-house trained DistilBERT (token classification)
+- **Duration, severity, negation, associated factors:** Rule-based post-processing
+- **Fallback:** Rule-based `NERExtractor` available (lexicon + regex)
 
 ---
 
