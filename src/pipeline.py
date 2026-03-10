@@ -15,7 +15,7 @@ import json
 import logging
 from typing import Any
 
-from .extraction import MLNERExtractor  # Phase 1: symptom extraction (ML + rules)
+from .extraction import MLNERExtractor
 from .ontology import OntologyMapper    # Phase 2: SNOMED mapping
 from .features import FeatureBuilder    # Phase 3: feature vectors
 from .risk_model import RiskPredictor   # Phase 4: risk scoring
@@ -49,11 +49,12 @@ def _log_features(features: dict[str, Any]) -> None:
 
 class AIAnalyzerPipeline:
     """
-    Orchestrates the full pipeline. Swap MLNERExtractor with NERExtractor for rule-based fallback.
+    Orchestrates the full pipeline. Uses MLNERExtractor by default.
     """
 
     def __init__(self):
-        # Phase 1: ML-based NER (DistilBERT) + rule-based duration/severity/negation
+        # Phase 1: fixed ML-based NER extractor
+        self.ner_mode = "ml"
         self.extractor = MLNERExtractor()
         # Phase 2: Map symptom names to SNOMED CT codes
         self.ontology = OntologyMapper()
@@ -79,6 +80,7 @@ class AIAnalyzerPipeline:
         # Real-time log: NER extraction
         symptoms_list = extraction_dict.get("symptoms") or []
         negated_list = extraction_dict.get("negated") or []
+        
         logger.info(
             "[NER] Extracted %d symptoms: %s",
             len(symptoms_list),

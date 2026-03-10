@@ -1,201 +1,163 @@
 """
-Stage 1: Structured NLP Extraction (Phase 1)
-Extracts symptoms, duration, severity, associated factors, and negations.
-Techniques: Symptom lexicon, pattern rules, negation detection.
+Stage 1: Extract symptoms from conversation (rule-based).
+Symptoms from lexicon; duration, severity, negation from regex.
 """
 
 import re
-from typing import Any
 from dataclasses import dataclass, field
+from typing import Any
 
-from .symptom_lexicon import SYMPTOM_LEXICON, VARIATION_TO_CANONICAL, get_canonical
+from .symptom_lexicon import SYMPTOM_LEXICON, get_canonical
 
 
 @dataclass
 class ExtractedSymptom:
-    """Single extracted symptom with attributes."""
     name: str
     duration: str | None = None
-    severity: str | None = None  # mild | moderate | severe
+    severity: str | None = None
     associated_factors: list[str] = field(default_factory=list)
 
 
 @dataclass
 class ExtractionResult:
-    """Output of Stage 1 - matches pipeline spec."""
     symptoms: list[ExtractedSymptom]
     negated: list[str]
 
 
-class NERExtractor:
-    """
-    Phase 1: Extracts structured medical facts from conversation.
-    - Symptoms (lexicon-based)
-    - Duration (pattern rules)
-    - Severity (mild/moderate/severe)
-    - Associated factors
-    - Negations
-    """
+_SEV = [
+    ("severe", re.compile(r"\b(severe|intense|extreme|bad|terrible|sharp|acute)\b", re.I)),
+    ("moderate", re.compile(r"\b(moderate|moderately|medium)\b", re.I)),
+    ("mild", re.compile(r"\b(mild|slight|minor|a bit|little)\b", re.I)),
+]
 
-    # Severity keywords
-    SEVERITY_PATTERNS = {
-        "mild": re.compile(r"\b(mild|slight|minor|a bit|little)\b", re.IGNORECASE),
-        "moderate": re.compile(r"\b(moderate|moderately|medium|moderately)\b", re.IGNORECASE),
-        "severe": re.compile(r"\b(severe|intense|extreme|bad|terrible|sharp|acute)\b", re.IGNORECASE),
+_DUR = re.compile(
+    r"(?:for|since|lasting|about|over)\s+(\d+\s*(?:days?|weeks?|months?|hours?)|a\s+(?:day|week|month|hour|few\s+days)|(?:yesterday|today|last\s+night|this\s+morning))|\b(\d+\s*(?:days?|weeks?|months?|hours?)|(?:a\s+)?few\s+days)\b",
+    re.I,
+)
+
+_NEG = re.compile(r"\b(no|not|without|denies?)\s+", re.I)
+
+_NEG_PHRASE = [
+    re.compile(r"\bno\s+([a-zA-Z\s]+?)(?=\.|,|$)", re.I),
+    re.compile(r"\b(?:not\s+(?:having|experiencing|had|have)|without|denies?)\s+([a-zA-Z\s]+?)(?=\.|,|$)", re.I),
+]
+
+
+def _overlaps(s1: int, e1: int, s2: int, e2: int) -> bool:
+    return s1 < e2 and s2 < e1
+
+
+def normalize_text(text: str) -> str:
+    return " ".join(text.split())
+
+
+def to_result_dict(result: ExtractionResult) -> dict[str, Any]:
+    return {
+        "symptoms": [
+            {
+                "name": s.name,
+                "duration": s.duration,
+                "severity": s.severity,
+                "associated_factors": s.associated_factors,
+            }
+            for s in result.symptoms
+        ],
+        "negated": result.negated,
     }
 
-    # Duration patterns
-    DURATION_PATTERN = re.compile(
-        r"(?:for|since|lasting|about|over)\s+"
-        r"(\d+\s*(?:days?|weeks?|months?|hours?|minutes?)|"
-        r"a\s+(?:day|week|month|hour|few\s+days)|"
-        r"(?:yesterday|today|last\s+night|this\s+morning))",
-        re.IGNORECASE
-    )
 
-    # Standalone duration: "3 days", "two weeks"
-    DURATION_STANDALONE = re.compile(
-        r"\b(\d+\s*(?:days?|weeks?|months?|hours?|minutes?)|"
-        r"(?:a\s+)?few\s+days)\b",
-        re.IGNORECASE
-    )
-
-    # Negation patterns - capture full phrase (e.g. "vomiting or shortness of breath")
-    NEGATION_PHRASES = [
-        r"\bno\s+([a-zA-Z\s]+?)(?=\.|,|$)",
-        r"\bnot\s+(?:having|experiencing|had|have)\s+([a-zA-Z\s]+?)(?=\.|,|$)",
-        r"\bwithout\s+([a-zA-Z\s]+?)(?=\.|,|$)",
-        r"\bdenies?\s+([a-zA-Z\s]+?)(?=\.|,|$)",
-        r"\bnever\s+(?:had|experienced)\s+([a-zA-Z\s]+?)(?=\.|,|$)",
-        r"\b(?:doesn't|don't|haven't|hasn't)\s+(?:have|had)\s+([a-zA-Z\s]+?)(?=\.|,|$)",
-    ]
+class NERExtractor:
+    """Extract symptoms via lexicon + regex. Used by pipeline and MLNERExtractor."""
 
     def __init__(self):
-        # Build sorted symptom patterns (longest first for correct matching)
-        self._symptom_patterns = self._build_symptom_patterns()
+        self._patterns = self._build_patterns()
 
-    def _build_symptom_patterns(self) -> list[tuple[str, re.Pattern]]:
-        """Build regex patterns for each symptom variation, longest first."""
-        patterns = []
-        for canonical, variations in SYMPTOM_LEXICON.items():
-            for v in variations:
-                # Word boundary aware pattern
-                escaped = re.escape(v)
-                patterns.append((canonical, re.compile(rf"\b{escaped}\b", re.IGNORECASE)))
+    def _build_patterns(self) -> list[tuple[str, re.Pattern[str]]]:
+        patterns: list[tuple[str, re.Pattern[str]]] = []
+        for name, variations in SYMPTOM_LEXICON.items():
+            for variation in variations:
+                patterns.append((name, re.compile(rf"\b{re.escape(variation)}\b", re.I)))
         patterns.sort(key=lambda x: -len(x[1].pattern))
         return patterns
 
     def _extract_negations(self, text: str) -> list[str]:
-        """Extract negated symptoms."""
-        negated = []
-        for pattern_str in self.NEGATION_PHRASES:
-            for m in re.finditer(pattern_str, text, re.IGNORECASE):
-                phrase = m.group(1).strip()
-                if len(phrase) > 2:
-                    # Split "X or Y" / "X and Y" into individual symptoms
-                    for part in re.split(r"\s+or\s+|\s+and\s+", phrase, flags=re.IGNORECASE):
-                        part = part.strip()
-                        if len(part) > 2:
-                            canonical = get_canonical(part) or part
-                            if canonical not in negated:
-                                negated.append(canonical)
+        negated: list[str] = []
+        for pat in _NEG_PHRASE:
+            for match in pat.finditer(text):
+                phrase = match.group(1).strip()
+                for part in re.split(r"\s+or\s+|\s+and\s+", phrase, flags=re.I):
+                    cleaned = part.strip()
+                    if len(cleaned) <= 2:
+                        continue
+                    canonical = get_canonical(cleaned) or cleaned
+                    if canonical not in negated:
+                        negated.append(canonical)
         return negated
 
     def _extract_duration_near(self, text: str, start: int, end: int, window: int = 80) -> str | None:
-        """Extract duration in context window around symptom span."""
-        left = max(0, start - window)
-        right = min(len(text), end + window)
-        context = text[left:right]
-        m = self.DURATION_PATTERN.search(context)
-        if m:
-            return m.group(1).strip()
-        m = self.DURATION_STANDALONE.search(context)
-        if m:
-            return m.group(1).strip()
-        return None
+        ctx = text[max(0, start - window) : min(len(text), end + window)]
+        match = _DUR.search(ctx)
+        return (match.group(1) or match.group(2) or "").strip() if match else None
 
-    def _extract_severity_near(self, text: str, start: int, end: int, window: int = 50) -> str | None:
-        """Extract severity from text before symptom. Prefer the one closest to symptom."""
-        pre_start = max(0, start - window)
-        pre_context = text[pre_start:start]
-        best_sev, best_pos = None, -1
-        for sev, pat in self.SEVERITY_PATTERNS.items():
-            for m in pat.finditer(pre_context):
-                # Use end of match - closer to symptom = more likely to modify it
-                pos = pre_start + m.end()
-                if pos > best_pos:
-                    best_pos, best_sev = pos, sev
-        return best_sev
+    def _extract_severity_near(self, text: str, start: int, _end: int, window: int = 50) -> str | None:
+        ctx = text[max(0, start - window) : start]
+        best, best_pos = None, -1
+        for name, pat in _SEV:
+            for match in pat.finditer(ctx):
+                if match.end() > best_pos:
+                    best_pos = match.end()
+                    best = name
+        return best
 
-    def _get_associated_symptoms(self, symptom_name: str, all_found: list[tuple[str, int, int]]) -> list[str]:
-        """Get other symptoms in same clause/sentence as this one."""
-        associated = []
-        for name, _, _ in all_found:
-            if name != symptom_name and name not in associated:
-                associated.append(name)
-        return associated
-
-    def extract(self, text: str) -> ExtractionResult:
-        """Extract structured medical facts from conversation text."""
-        text_clean = " ".join(text.split())
-        negated = self._extract_negations(text_clean)
-
-        # Find all symptom mentions with spans
+    def _collect_symptom_spans(self, text: str) -> list[tuple[str, int, int]]:
         found: list[tuple[str, int, int]] = []
-        for canonical, pattern in self._symptom_patterns:
-            for m in pattern.finditer(text_clean):
-                span_start, span_end = m.span()
-                # Skip if this span overlaps with already found longer match
-                overlap = any(s <= span_start < e or s < span_end <= e for _, s, e in found)
-                if not overlap:
-                    found.append((canonical, span_start, span_end))
-
-        # Deduplicate by position, keep first (longest) match per area
+        for name, pat in self._patterns:
+            for match in pat.finditer(text):
+                start, end = match.start(), match.end()
+                if not any(_overlaps(start, end, s2, e2) for _, s2, e2 in found):
+                    found.append((name, start, end))
         found.sort(key=lambda x: x[1])
-        merged: list[tuple[str, int, int]] = []
-        for name, s, e in found:
-            if not any(ms <= s < me or ms < e <= me for _, ms, me in merged):
-                merged.append((name, s, e))
+        return found
 
-        # Filter out negated symptoms
-        negated_set = {n.lower() for n in negated}
+    def extract_negations(self, text: str) -> list[str]:
+        return self._extract_negations(text)
+
+    def _is_negated_match(self, text: str, start: int, name: str, negated_lower: set[str]) -> bool:
+        if name.lower() in negated_lower:
+            return True
+        return bool(_NEG.search(text[max(0, start - 50) : start]))
+
+    def _associated_symptoms(self, name: str, found: list[tuple[str, int, int]], negated_lower: set[str]) -> list[str]:
+        return [other for other, _, _ in found if other != name and other.lower() not in negated_lower]
+
+    def build_symptoms_from_spans(
+        self,
+        text: str,
+        found: list[tuple[str, int, int]],
+        negated: list[str],
+    ) -> list[ExtractedSymptom]:
+        negated_lower = {n.lower() for n in negated}
         symptoms: list[ExtractedSymptom] = []
 
-        for name, start, end in merged:
-            if name.lower() in negated_set:
+        for name, start, end in found:
+            if self._is_negated_match(text, start, name, negated_lower):
                 continue
-            # Check if symptom is in negation context (e.g., "no fever" before "fever")
-            left_context = text_clean[max(0, start - 50):start].lower()
-            if re.search(r"\b(no|not|without|denies?)\s+", left_context):
-                continue
+            symptoms.append(
+                ExtractedSymptom(
+                    name=name,
+                    duration=self._extract_duration_near(text, start, end),
+                    severity=self._extract_severity_near(text, start, end),
+                    associated_factors=self._associated_symptoms(name, found, negated_lower),
+                )
+            )
+        return symptoms
 
-            duration = self._extract_duration_near(text_clean, start, end)
-            severity = self._extract_severity_near(text_clean, start, end)
-            associated = [
-                a for a in self._get_associated_symptoms(name, merged)
-                if a.lower() not in negated_set
-            ]
-
-            symptoms.append(ExtractedSymptom(
-                name=name,
-                duration=duration,
-                severity=severity,
-                associated_factors=associated,
-            ))
-
+    def extract(self, text: str) -> ExtractionResult:
+        normalized_text = normalize_text(text)
+        negated = self._extract_negations(normalized_text)
+        found = self._collect_symptom_spans(normalized_text)
+        symptoms = self.build_symptoms_from_spans(normalized_text, found, negated)
         return ExtractionResult(symptoms=symptoms, negated=negated)
 
     def to_dict(self, result: ExtractionResult) -> dict[str, Any]:
-        """Convert to pipeline output format."""
-        return {
-            "symptoms": [
-                {
-                    "name": s.name,
-                    "duration": s.duration,
-                    "severity": s.severity,
-                    "associated_factors": s.associated_factors,
-                }
-                for s in result.symptoms
-            ],
-            "negated": result.negated,
-        }
+        return to_result_dict(result)

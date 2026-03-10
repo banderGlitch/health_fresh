@@ -8,6 +8,7 @@ Extend SNOMED_SYMPTOM_MAP for production use.
 from typing import Any
 
 # SNOMED CT symptom mappings (code, canonical name)
+# dynamic if we can fetch vai an api 
 SNOMED_SYMPTOM_MAP = {
     "fever": ("386661006", "Fever"),
     "pyrexia": ("386661006", "Fever"),

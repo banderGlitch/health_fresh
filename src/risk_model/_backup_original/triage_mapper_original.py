@@ -1,13 +1,10 @@
 """
-Map pipeline features to finetuned triage model input.
-
-Converts: symptoms, age, gender, duration, severity -> 5 model inputs.
-Symptom names -> one of 20 categories (e.g. "Fever and mild headache").
+BACKUP - Original triage_mapper.py
+Restore: copy to ../triage_mapper.py
 """
 
 from typing import Any
 
-# 20 symptom categories (must match label_encoders.pkl)
 TRIAGE_SYMPTOMS = [
     "Breathing shortness", "Chest tightness and sweating", "Cold and throat irritation",
     "Cough and cold", "Fever and mild headache", "Headache since one week",
@@ -18,9 +15,7 @@ TRIAGE_SYMPTOMS = [
     "Vomiting and dehydration",
 ]
 
-# Rules: (keywords, severity_hint, category). Order matters (first match wins).
-
-_RULES = [
+_SYMPTOM_MAPPING_RULES = [
     ({"chest pain", "chest tightness"}, "severe", "Severe chest pain"),
     ({"chest tightness", "sweating", "chest pain"}, None, "Chest tightness and sweating"),
     ({"shortness of breath", "breathing difficulty", "dyspnea"}, "severe", "Severe breathing difficulty"),
@@ -46,51 +41,41 @@ _RULES = [
     ({"blood pressure", "hypertension", "high bp"}, None, "High blood pressure symptoms"),
 ]
 
-_DEFAULT = "Cough and cold"
+_DEFAULT_SYMPTOM = "Cough and cold"
 
 
-
-def _norm(s: str) -> str:
+def _normalize(s: str) -> str:
     return s.lower().strip()
 
 
-def map_symptoms_to_category(
-    names: list[str],
-    severities: list[str | None] | None = None,
-    max_days: float | None = None,
-) -> str:  # return type 
-    """Map symptom names to one of 20 categories."""
+def map_symptoms_to_category(symptom_names: list[str], severities: list[str | None] | None = None, max_duration_days: float | None = None) -> str:
     severities = severities or []
-    has_severe = any(s and _norm(str(s)) == "severe" for s in severities)
-
-    # Build set of words from symptoms
-    words = set()
-    for n in names:
+    has_severe = any(s and _normalize(str(s)) == "severe" for s in severities)
+    symptom_set = {_normalize(n) for n in symptom_names if n}
+    all_tokens = set()
+    for n in symptom_names:
         if n:
-            words.add(_norm(n))
-            for w in _norm(n).split():
-                if len(w) > 2:
-                    words.add(w)
+            for t in _normalize(n).split():
+                if len(t) > 2:
+                    all_tokens.add(t)
+    combined = symptom_set | all_tokens
 
-    for keywords, hint, category in _RULES:
-        if not keywords & words:
+    for keywords, severity_hint, category in _SYMPTOM_MAPPING_RULES:
+        if not keywords.intersection(combined):
             continue
-        if hint == "severe" and not has_severe:
+        if severity_hint == "severe" and not has_severe:
             continue
-        if hint == "mild" and has_severe:
+        if severity_hint == "mild" and has_severe:
             continue
-        if category == "High fever for 5 days" and max_days is not None:
-            if max_days < 4 or max_days > 7:
+        if category == "High fever for 5 days" and max_duration_days is not None:
+            if max_duration_days < 4 or max_duration_days > 7:
                 continue
         return category
 
-    return _DEFAULT
+    return _DEFAULT_SYMPTOM
 
-
-# 
 
 def map_age_to_triage(age: int) -> str:
-    """Age -> bucket string."""
     if age < 6:
         return "6-15"
     if age <= 15:
@@ -102,9 +87,8 @@ def map_age_to_triage(age: int) -> str:
     return "50+"
 
 
-def map_duration_to_triage(max_days: float | None, acute: int) -> str:
-    """Duration -> bucket string."""
-    if acute or (max_days is not None and max_days <= 2):
+def map_duration_to_triage(max_days: float | None, acute_flag: int) -> str:
+    if acute_flag or (max_days is not None and max_days <= 2):
         return "1-2 days"
     if max_days is not None and max_days <= 5:
         return "3-5 days"
@@ -114,36 +98,42 @@ def map_duration_to_triage(max_days: float | None, acute: int) -> str:
 
 
 def map_severity_to_triage(severities: list[str | None]) -> str:
-    """Worst severity -> Mild|Moderate|Severe."""
-    m = {"mild": 0, "moderate": 1, "severe": 2}
-    best = 0
+    mapping = {"mild": 0, "moderate": 1, "severe": 2}
+    max_val = 0
     for s in (severities or []):
         if s:
-            best = max(best, m.get(str(s).lower(), 1))
-    return ["Mild", "Moderate", "Severe"][best]
+            max_val = max(max_val, mapping.get(str(s).lower(), 1))
+    return ["Mild", "Moderate", "Severe"][max_val]
 
 
 def map_gender_to_triage(gender: str) -> str:
-    """Gender -> Male|Female."""
     g = str(gender).lower().strip()
-    return "Male" if g in ("male", "m") else "Female"
+    if g in ("male", "m"):
+        return "Male"
+    return "Female"
 
 
 def features_to_triage_input(features: dict[str, Any]) -> dict[str, Any] | None:
-    """Convert pipeline features to 5 model inputs."""
-    text = features.get("symptom_text") or ""
-    names = [s.strip() for s in text.split(",") if s.strip()]
-    if not names:
-        names = ["general discomfort"]
+    symptom_text = features.get("symptom_text") or ""
+    symptom_names = [s.strip() for s in symptom_text.split(",") if s.strip()]
+    if not symptom_names:
+        symptom_names = ["general discomfort"]
 
     severities = features.get("severities") or []
     max_days = features.get("max_duration_days")
-    acute = features.get("acute_flag", 0)
+    acute_flag = features.get("acute_flag", 0)
+
+    symptom_category = map_symptoms_to_category(symptom_names, severities, max_days)
+    age = features.get("age", 40)
+    gender = map_gender_to_triage(features.get("gender", "unknown"))
+    age_bucket = map_age_to_triage(age)
+    duration = map_duration_to_triage(max_days, acute_flag)
+    severity = map_severity_to_triage(severities)
 
     return {
-        "symptom_category": map_symptoms_to_category(names, severities, max_days),
-        "gender": map_gender_to_triage(features.get("gender", "unknown")),
-        "age_bucket": map_age_to_triage(features.get("age", 40)),
-        "duration": map_duration_to_triage(max_days, acute),
-        "severity": map_severity_to_triage(severities),
+        "symptom_category": symptom_category,
+        "gender": gender,
+        "age_bucket": age_bucket,
+        "duration": duration,
+        "severity": severity,
     }

@@ -47,20 +47,20 @@ docs/        → Documentation
 # Install dependencies
 pip install -r requirements.txt
 
-# Run API (port 8001; or use run_server.bat / run_server.ps1)
-uvicorn api.main:app --reload --host 127.0.0.1 --port 8001
+# Run API (port 8002; or use run_server.bat / run_server.ps1)
+uvicorn api.main:app --host 127.0.0.1 --port 8002
 ```
 
 **Phase 1 (extraction only):**
 ```bash
-curl -X POST http://localhost:8001/extract \
+curl -X POST http://localhost:8002/extract \
   -H "Content-Type: application/json" \
   -d '{"conversation": "I have had fever for 3 days and a mild headache. No vomiting."}'
 ```
 
 **Full pipeline:**
 ```bash
-curl -X POST http://localhost:8001/analyze \
+curl -X POST http://localhost:8002/analyze \
   -H "Content-Type: application/json" \
   -d '{"conversation": "I have had fever for 3 days and a mild headache. No vomiting."}'
 ```
