@@ -132,7 +132,13 @@ class LLMReasoner:
 
         prompt = f"""You are a clinical assistant. Based on this patient conversation and extracted data, provide:
 1. A brief reasoning summary (2-3 sentences) about what the symptoms might suggest.
-2. Up to 3 clarifying questions the clinician could ask to get more information.
+2. Clarifying questions: ask 1 or 2 only. Prefer 1 if one question covers the gap. NEVER ask 3.
+
+RULES (strict):
+- Ask only what directly helps triage: duration, severity. One short question per gap.
+- NEVER ask: travel, exposure to sick people, appetite changes, vomiting/diarrhea/urination as a list.
+- Keep each question short: "How long?" "How severe?" "Constant or comes and goes?"
+- If enough info exists, return empty array [].
 
 IMPORTANT: Do NOT suggest or change severity. Severity is determined by the risk engine.
 
@@ -144,7 +150,7 @@ Negated (patient does NOT have): {negated}
 Risk assessment (from engine - do not modify): Severity={risk_output.get('Severity')}, RiskScore={risk_output.get('RiskScore')}
 
 Respond in this exact JSON format only:
-{{"reasoning_summary": "your 2-3 sentence summary", "clarifying_questions": ["question 1", "question 2", "question 3"]}}"""
+{{"reasoning_summary": "your 2-3 sentence summary", "clarifying_questions": ["question 1"]}}"""
 
         try:
             if self._groq_client:

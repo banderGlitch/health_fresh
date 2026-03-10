@@ -60,7 +60,7 @@ if MongoSessionStore:
 def _session_backend_name() -> str:
     return "mongodb" if session_store else "mongodb-unavailable"
 
-MAX_FOLLOWUP_QUESTIONS = 3
+MAX_FOLLOWUP_QUESTIONS = 2  # Cap at 2; LLM instructed to ask 1-2 only
 MAX_ROUNDS = 4
 _DEMOGRAPHIC_QUESTIONS = {
     "age": "What is your age?",
