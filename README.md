@@ -78,13 +78,4 @@ Phase 1 now uses an **in-house trained DistilBERT** model for symptom extraction
 
 To retrain: `python scripts/prepare_ner_data.py` then `python scripts/train_ner.py`.
 
----
 
-## Next Steps
-
-1. ~~**Stage 1:** Integrate Medical NER~~ ✅ Done (in-house DistilBERT)
-2. **Stage 2:** Add full SNOMED CT / UMLS ontology
-3. **Stage 4:** Train risk model on symptom-disease datasets
-4. **Stage 5:** Connect OpenAI GPT-4 or local LLM
-5. Add PubMed research tool (per Krish Naik reference)
-6. Implement MCP Server for agentic tools
