@@ -1,0 +1,4 @@
+index/
+*.npy
+__pycache__/
+.env

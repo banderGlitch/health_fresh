@@ -185,6 +185,86 @@ Respond in this exact JSON format only:
                 "risk_output": risk_output,
             }
 
+    def classify_extraction_gap(
+        self,
+        conversation: str,
+        extraction_dict: dict[str, Any],
+    ) -> dict[str, Any]:
+        """
+        Classify why extraction failed or is incomplete. Returns scenario and appropriate response.
+        - vague: User gave vague description (e.g. "not feeling well") -> clarifying_questions only
+        - unrecognized: User used terms we don't recognize (e.g. "diaphoresis") -> help_message only
+        - partial: Some symptoms found, some not -> help_message for unrecognized terms only
+        - normal: All good -> clarifying_questions for duration/severity
+        """
+        if not self.client:
+            return {
+                "scenario": "normal",
+                "help_message": None,
+                "clarifying_questions": [],
+                "unrecognized_terms": [],
+            }
+
+        symptoms = extraction_dict.get("symptoms") or []
+        extracted_names = [str(s.get("name", "")).strip() for s in symptoms if s.get("name")]
+        symptom_count = len(extracted_names)
+
+        prompt = f"""You are a clinical triage assistant. The user described their symptoms. We extracted: {extracted_names}.
+
+Classify the situation:
+
+1. VAGUE: User gave a vague/generic description with no specific symptoms (e.g. "I am not feeling well", "feel bad", "something wrong"). No medical terms.
+2. UNRECOGNIZED: User used medical/symptom terms we don't recognize (e.g. "diaphoresis", "pyrexia"). We extracted 0 symptoms.
+3. PARTIAL: We extracted some symptoms but the user mentioned more that we couldn't recognize. List the unrecognized terms.
+4. NORMAL: We extracted symptoms. No unrecognized terms. Ask for duration/severity.
+
+User said: "{conversation}"
+Extracted: {extracted_names}
+
+Respond in this exact JSON format only:
+{{"scenario": "vague"|"unrecognized"|"partial"|"normal", "unrecognized_terms": ["term1", "term2"], "help_message": "message or null", "clarifying_questions": ["q1", "q2"]}}
+
+RULES:
+- If scenario is "vague": help_message=null, clarifying_questions=["Can you be more specific? What symptoms are you experiencing?"] or similar
+- If scenario is "unrecognized" or "partial": help_message="We couldn't recognize [terms]. Could you describe your symptoms again using simpler words (e.g. sweating, fever, headache)?", clarifying_questions=[]
+- If scenario is "normal": help_message=null, clarifying_questions=1-2 short questions about duration or severity
+- unrecognized_terms: list only when scenario is "unrecognized" or "partial"
+"""
+
+        try:
+            if self._groq_client:
+                content = self._call_groq(prompt)
+            elif self._gemini_client:
+                content = self._call_gemini(prompt)
+            else:
+                content = self._call_openai(prompt)
+
+            if content.startswith("```"):
+                content = content.split("```")[1]
+                if content.startswith("json"):
+                    content = content[4:]
+            content = content.strip()
+            data = json.loads(content)
+
+            scenario = str(data.get("scenario", "normal")).lower()
+            if scenario not in ("vague", "unrecognized", "partial", "normal"):
+                scenario = "normal"
+
+            return {
+                "scenario": scenario,
+                "help_message": data.get("help_message"),
+                "clarifying_questions": data.get("clarifying_questions") or [],
+                "unrecognized_terms": data.get("unrecognized_terms") or [],
+            }
+        except Exception as e:
+            logger.warning("[CLASSIFY] LLM failed: %s", e)
+            return {
+                "scenario": "normal",
+                "help_message": None,
+                "clarifying_questions": [],
+                "unrecognized_terms": [],
+            }
+
     def merge_clarification(
         self,
         conversation: str,

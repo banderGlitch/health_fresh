@@ -135,7 +135,7 @@ class AIAnalyzerPipeline:
         )
 
         # Assemble final response for API
-        result = {
+        result: dict[str, Any] = {
             "symptoms": extraction_dict["symptoms"],
             "mapped_symptoms": mapped_symptoms,
             "negated": extraction_dict["negated"],
@@ -147,4 +147,6 @@ class AIAnalyzerPipeline:
         }
         if "triage_recommendation" in risk_output and risk_output["triage_recommendation"]:
             result["triage_recommendation"] = risk_output["triage_recommendation"]
+        if extraction_dict.get("help_message"):
+            result["help_message"] = extraction_dict["help_message"]
         return result

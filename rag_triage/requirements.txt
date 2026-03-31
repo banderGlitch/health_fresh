@@ -1,0 +1,4 @@
+# RAG Triage Phase 1
+pandas>=2.0.0
+numpy>=1.24.0
+sentence-transformers>=2.2.0

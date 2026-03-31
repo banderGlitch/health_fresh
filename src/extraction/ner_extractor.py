@@ -22,6 +22,7 @@ class ExtractedSymptom:
 class ExtractionResult:
     symptoms: list[ExtractedSymptom]
     negated: list[str]
+    help_message: str | None = None
 
 
 _SEV = [
@@ -52,7 +53,7 @@ def normalize_text(text: str) -> str:
 
 
 def to_result_dict(result: ExtractionResult) -> dict[str, Any]:
-    return {
+    out: dict[str, Any] = {
         "symptoms": [
             {
                 "name": s.name,
@@ -64,6 +65,9 @@ def to_result_dict(result: ExtractionResult) -> dict[str, Any]:
         ],
         "negated": result.negated,
     }
+    if result.help_message:
+        out["help_message"] = result.help_message
+    return out
 
 
 class NERExtractor:

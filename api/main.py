@@ -18,7 +18,7 @@ class _FlushHandler(logging.StreamHandler):
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s",
     handlers=[_FlushHandler(sys.stdout)], force=True)
-for n in ("src.pipeline", "src.llm_reasoning", "api.main", "uvicorn", "uvicorn.access"):
+for n in ("src.pipeline", "src.risk_model", "src.llm_reasoning", "api.main", "uvicorn", "uvicorn.access"):
     logging.getLogger(n).setLevel(logging.INFO)
 
 try:
@@ -233,13 +233,62 @@ def _collection_llm_questions(conversation: str, extraction_dict: dict[str, Any]
     return out.get("clarifying_questions", []) or []
 
 
+def _classify_and_get_collection_response(
+    conversation: str,
+    extraction_dict: dict[str, Any],
+    demographics: dict[str, Any],
+    asked_questions: list[str],
+) -> tuple[dict[str, Any], list[str]]:
+    """
+    Use LLM to classify extraction gap (vague vs unrecognized vs partial).
+    Returns (response_dict, next_questions).
+    - vague: clarifying_questions only, no help_message
+    - unrecognized/partial: help_message only, no clarifying_questions
+    - normal: standard clarifying_questions
+    """
+    gap = llm.classify_extraction_gap(conversation, extraction_dict)
+    scenario = gap.get("scenario", "normal")
+
+    if scenario in ("unrecognized", "partial"):
+        out = _build_collection_response(
+            extraction_dict=extraction_dict,
+            next_qs=[],
+            reason_summary="Collecting more details before full risk scoring.",
+        )
+        out["help_message"] = gap.get("help_message") or (
+            "We couldn't recognize some terms. Could you describe your symptoms again using simpler words (e.g. sweating, fever, headache)?"
+        )
+        return out, []
+
+    if scenario == "vague":
+        out = _build_collection_response(
+            extraction_dict=extraction_dict,
+            next_qs=[],
+            reason_summary="Collecting more details before full risk scoring.",
+        )
+        if "help_message" in out:
+            del out["help_message"]
+        llm_qs = gap.get("clarifying_questions") or ["Can you be more specific? What symptoms are you experiencing?"]
+        next_qs = _next_questions(llm_qs, demographics, asked_questions)
+        return out, next_qs
+
+    llm_qs = _collection_llm_questions(conversation, extraction_dict)
+    out = _build_collection_response(
+        extraction_dict=extraction_dict,
+        next_qs=[],
+        reason_summary="Collecting more details before full risk scoring.",
+    )
+    next_qs = _next_questions(llm_qs, demographics, asked_questions)
+    return out, next_qs
+
+
 def _build_collection_response(
     extraction_dict: dict[str, Any],
     next_qs: list[str],
     reason_summary: str = "",
 ) -> dict[str, Any]:
     """Response shape used while collecting info (before full risk run)."""
-    return {
+    out: dict[str, Any] = {
         "symptoms": extraction_dict.get("symptoms", []),
         "mapped_symptoms": [],
         "negated": extraction_dict.get("negated", []),
@@ -254,6 +303,9 @@ def _build_collection_response(
         },
         "collection_only": True,
     }
+    if extraction_dict.get("help_message"):
+        out["help_message"] = extraction_dict["help_message"]
+    return out
 
 
 def _build_round_result(round_no: int, out: dict[str, Any]) -> dict[str, Any]:
@@ -328,16 +380,13 @@ def analyze(req: AnalyzeRequest):
             history=req.history,
         )
         llm_qs = out.get("llm_clarification", {}).get("clarifying_questions", [])
+        next_qs = _next_questions(llm_qs, initial_demographics, asked_questions=[])
     else:
-        llm_qs = _collection_llm_questions(req.conversation, extraction_dict)
-        out = _build_collection_response(
-            extraction_dict=extraction_dict,
-            next_qs=[],
-            reason_summary="Collecting more details before full risk scoring.",
+        out, next_qs = _classify_and_get_collection_response(
+            req.conversation, extraction_dict, initial_demographics, asked_questions=[],
         )
 
-    sid = str(uuid.uuid4())  
-    next_qs = _next_questions(llm_qs, initial_demographics, asked_questions=[])
+    sid = str(uuid.uuid4())
     missing_required = _missing_required_fields(initial_demographics)
     session_payload = {
         "conversation": req.conversation,
@@ -403,6 +452,8 @@ def analyze_continue(req: ContinueRequest):
     ready = _ready_for_full_pipeline(extraction_dict, updated_demographics)
     force_run = s["round"] >= MAX_ROUNDS
 
+    asked_questions = s.get("asked_questions", [])
+
     if emergency or ready or force_run:
         out = pipeline.run(
             conversation=combined,
@@ -410,25 +461,26 @@ def analyze_continue(req: ContinueRequest):
             history=s.get("history"),
         )
         llm_qs = out.get("llm_clarification", {}).get("clarifying_questions", [])
+        next_qs = [] if s["round"] >= MAX_ROUNDS else _next_questions(llm_qs, updated_demographics, asked_questions)
     else:
-        llm_qs = _collection_llm_questions(combined, extraction_dict)
-        out = _build_collection_response(
-            extraction_dict=extraction_dict,
-            next_qs=[],
-            reason_summary="Collecting more details before full risk scoring.",
+        out, next_qs = _classify_and_get_collection_response(
+            combined, extraction_dict, updated_demographics, asked_questions,
         )
+        if s["round"] >= MAX_ROUNDS:
+            next_qs = []
 
     s["conversation"] = combined
-    asked_questions = s.get("asked_questions", [])
-    if s["round"] >= MAX_ROUNDS:
-        next_qs = []
-    else:
-        next_qs = _next_questions(llm_qs, updated_demographics, asked_questions)
 
     # If required demographics are still missing and no new question is available,
-    # re-ask missing demographic prompts to avoid premature completion.
+    # re-ask missing demographic prompts (unless we're showing help_message only).
     missing_required = _missing_required_fields(updated_demographics)
-    if not next_qs and missing_required and s["round"] < MAX_ROUNDS and out.get("collection_only"):
+    if (
+        not next_qs
+        and missing_required
+        and s["round"] < MAX_ROUNDS
+        and out.get("collection_only")
+        and not out.get("help_message")
+    ):
         next_qs = [_DEMOGRAPHIC_REASK[k] for k in missing_required][:MAX_FOLLOWUP_QUESTIONS]
 
     s["clarifying_questions"] = next_qs

@@ -18,7 +18,7 @@ SYMPTOM_LEXICON: dict[str, list[str]] = {
     "sore throat": ["sore throat", "throat pain", "throat hurts", "pharyngitis"],
     "runny nose": ["runny nose", "rhinorrhea", "stuffy nose", "nasal congestion", "blocked nose"],
     "body ache": ["body ache", "body pain", "muscle ache", "muscle pain", "myalgia", "aches"],
-    "abdominal pain": ["abdominal pain", "stomach pain", "belly pain", "stomachache", "stomach ache"],
+    "abdominal pain": ["abdominal pain", "stomach pain", "belly pain", "stomachache", "stomach ache", "stomach discomfort"],
     "diarrhea": ["diarrhea", "diarrhoea", "loose stools", "watery stools"],
     "dizziness": ["dizziness", "dizzy", "vertigo", "lightheaded", "light-headed"],
     "sweating": ["sweating", "sweats", "perspiration", "night sweats"],

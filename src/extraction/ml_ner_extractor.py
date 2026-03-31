@@ -14,19 +14,13 @@ from .symptom_lexicon import SYMPTOM_LEXICON, get_canonical
 
 _VALID_SEVERITIES = {"mild", "moderate", "severe"}
 _NOISE_WORDS = {
-    "a",
-    "an",
-    "and",
-    "or",
-    "on",
-    "off",
-    "of",
-    "the",
-    "to",
-    "for",
-    "with",
-    "stairs",
+    "a", "an", "and", "or", "on", "off", "of", "the", "to", "for", "with", "stairs",
 }
+
+_LEXICON_HELP_MESSAGE = (
+    "We currently support a limited set of symptoms. "
+    "Please describe your symptoms using common terms (e.g. 'sweating' instead of 'diaphoresis')."
+)
 
 # It is the model which detects the symptoms 
 
@@ -74,6 +68,58 @@ class MLNERExtractor:
         except Exception:
             return {}
 
+    def _rephrase_for_extraction(self, text: str) -> str:
+        """LLM rephrase: clarify vague terms into standard symptom phrases. Pass through original if unsure."""
+        if not self._llm.client:
+            return text
+        prompt = """Rephrase this patient symptom description into a clear clinical sentence.
+
+STRICT RULES:
+- Use standard symptom terms: "stomach pain"/"abdominal pain" instead of "discomfort", "stomach ache" instead of "ache".
+- Do NOT add symptoms the patient did not mention.
+- Do NOT remove any symptom the patient mentioned.
+- Do NOT diagnose or suggest conditions.
+- Keep it brief. Same meaning, clearer wording only.
+- If the text is already clear, ambiguous, or you are unsure, output EXACTLY: SAME
+
+Patient text: """
+        try:
+            out = self._call_llm(prompt + f'"{text}"')
+            if not out or not isinstance(out, str):
+                return text
+            out = out.strip()
+            if not out or out.upper() == "SAME":
+                return text
+            if len(out) > len(text) * 3:
+                return text
+            if abs(len(out) - len(text)) > max(100, len(text) * 2):
+                return text
+            return out
+        except Exception:
+            return text
+
+    def _phrase_search_spans(self, text: str) -> list[tuple[str, int, int]]:
+        """Step 4: Scan text for known symptom phrases; add any not from NER."""
+        text_lower = text.lower()
+        found: list[tuple[str, int, int]] = []
+        for canonical, variations in SYMPTOM_LEXICON.items():
+            for phrase in [canonical] + variations:
+                idx = text_lower.find(phrase)
+                if idx >= 0:
+                    found.append((canonical, idx, idx + len(phrase)))
+                    break  # one match per canonical
+        return found
+
+    def _filter_symptoms_by_text(self, symptoms: list[ExtractedSymptom], text: str) -> list[ExtractedSymptom]:
+        """Step 3: Remove symptoms that don't appear in the original text."""
+        text_lower = text.lower()
+        keep: list[ExtractedSymptom] = []
+        for s in symptoms:
+            variations = SYMPTOM_LEXICON.get(s.name, [s.name])
+            if any(phrase in text_lower for phrase in [s.name] + variations):
+                keep.append(s)
+        return keep
+
     def _build_spans(self, text: str, ner: list[dict[str, Any]]) -> list[tuple[str, int, int]]:
         # [
         #  {"word":"chest pain","start":7,"end":17}  ,
@@ -94,26 +140,19 @@ class MLNERExtractor:
 
             if len(cleaned) < 3 or cleaned in _NOISE_WORDS:
                 continue
-        #    "high temperature" → "fever"
-            name = get_canonical(cleaned)
 
+            name = get_canonical(cleaned)
             if not name and cleaned in SYMPTOM_LEXICON:
                 name = cleaned
-            # if name itself is the canonical name  ex :- fever 
             if not name:
-                # if name is not the canonical name , then check if it is a variation of the canonical name 
                 for canonical, variations in SYMPTOM_LEXICON.items():
-                    if cleaned in canonical or canonical in cleaned:
-                        name = canonical
-                        break
-                   # similarly doing
-                    if any(v in cleaned or cleaned in v for v in variations):
+                    if cleaned == canonical or cleaned in variations:
                         name = canonical
                         break
             if not name or name in seen_names:
                 continue
 
-            seen_names.add(name)  # to prevent duplicate 
+            seen_names.add(name)
             spans.append((name, item.get("start", 0), item.get("end", len(text))))
         return spans
 # llm Helps us to detect more feature given the features extracted from the model 
@@ -234,50 +273,51 @@ class MLNERExtractor:
     # associated_factors=["shortness of breath","sweating"]
 # )
 
+    def _should_show_lexicon_help(self, text: str, symptom_count: int) -> bool:
+        """Show help when 0 symptoms extracted but input looks like symptom description."""
+        return symptom_count == 0 and len((text or "").strip()) > 15
+
     def extract(self, text: str) -> ExtractionResult:
-        # " I   have  Chest   Pain  "
-        # after normalizing 
-        # "I have chest pain"
         normalized_text = normalize_text(text)
         if not normalized_text:
             return ExtractionResult(symptoms=[], negated=[])
-        
-#         symptoms = []
-#         negated = []
+
+        text_for_extraction = self._rephrase_for_extraction(normalized_text)
 
         try:
-            ner = self.pipeline(normalized_text)
+            ner = self.pipeline(text_for_extraction)
         except Exception:
-            return ExtractionResult(symptoms=[], negated=[])
-        
-#         [
-#        {"word":"chest pain","start":12,"end":22},
-#         {"word":"fever","start":35,"end":40}
-#        ]
+            msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, 0) else None
+            return ExtractionResult(symptoms=[], negated=[], help_message=msg)
 
-        if not ner:
-            return ExtractionResult(symptoms=[], negated=[])
+        # Build spans from NER (or empty if NER returned nothing)
+        spans = self._build_spans(text_for_extraction, ner) if ner else []
+        # Always run phrase search - catches fragmented input like "Fever. Headache. 3 days"
+        phrase_spans = self._phrase_search_spans(text_for_extraction)
+        seen_names = {s[0] for s in spans}
+        for name, start, end in phrase_spans:
+            if name not in seen_names:
+                spans.append((name, start, end))
+                seen_names.add(name)
 
-
-        spans = self._build_spans(normalized_text, ner)
-#         spans = [
-#           ("chest pain", 7, 17),
-#          ("fever", 22, 27)
-#    ]
         if not spans:
-            return ExtractionResult(symptoms=[], negated=[])
+            msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, 0) else None
+            return ExtractionResult(symptoms=[], negated=[], help_message=msg)
 
         try:
-            llm_result = self._enrich_with_llm(normalized_text, spans)
+            llm_result = self._enrich_with_llm(text_for_extraction, spans)
             if llm_result is not None:
-                return llm_result
+                symptoms = self._filter_symptoms_by_text(llm_result.symptoms, text_for_extraction)
+                msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, len(symptoms)) else None
+                return ExtractionResult(symptoms=symptoms, negated=llm_result.negated, help_message=msg)
         except Exception:
             pass
-        # if llm fails , then rule based extraction
-        ## rule based extraction
-        negated = self._rules.extract_negations(normalized_text)
-        symptoms = self._rules.build_symptoms_from_spans(normalized_text, spans, negated)
-        return ExtractionResult(symptoms=symptoms, negated=negated)
+
+        negated = self._rules.extract_negations(text_for_extraction)
+        symptoms = self._rules.build_symptoms_from_spans(text_for_extraction, spans, negated)
+        symptoms = self._filter_symptoms_by_text(symptoms, text_for_extraction)
+        msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, len(symptoms)) else None
+        return ExtractionResult(symptoms=symptoms, negated=negated, help_message=msg)
 
     def to_dict(self, result: ExtractionResult) -> dict[str, Any]:
         return to_result_dict(result)
