@@ -1,6 +1,6 @@
 # AI-Analyzer | Medical Diagnosis Pipeline
 
-**By CepiaLabs** — An intelligent medical research and diagnostic pipeline.
+**By BanderSnatch** — An intelligent medical research and diagnostic pipeline.
 
 ---
 
@@ -31,11 +31,15 @@ See [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for full layout.
 ```
 api/         → FastAPI routes
 src/         → Pipeline (extraction, ontology, features, risk, llm)
+rag_triage/  → RAG triage (SYNAPSE embeddings + retrieval)
+frontend/    → React UI (Vite) — symptom selection + /analyze
 scripts/     → NER training
 data/        → Training data
 models/      → Trained models (not included in repo)
 docs/        → Documentation
 ```
+
+**Repository:** [github.com/banderGlitch/healthcare](https://github.com/banderGlitch/healthcare)
 
 > **Note:** The `models/` folder is **not included** in this repository (gitignored due to size ~1.5 GB). You must obtain or train the models separately to run the full pipeline. See Phase 1 section below for NER training instructions.
 
@@ -64,6 +68,29 @@ curl -X POST http://localhost:8002/analyze \
   -H "Content-Type: application/json" \
   -d '{"conversation": "I have had fever for 3 days and a mild headache. No vomiting."}'
 ```
+
+---
+
+## RAG triage (optional)
+
+Build the vector index once (see `rag_triage/README.md`), then the risk pipeline can use **RAG** retrieval over SYNAPSE before falling back to other models.
+
+```bash
+cd rag_triage
+python build_index.py
+```
+
+---
+
+## Web frontend (optional)
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Opens the Vite app (proxies API calls to `http://127.0.0.1:8002` in dev). Start the API with `run_server.bat` first.
 
 ---
 
