@@ -318,7 +318,7 @@ body {
   height: 8px;
   background: rgba(0, 80, 180, 0.2);
   border-radius: 4px;
-  position: relative;
+    position: relative;
 }
 
 .freq-thumb {
@@ -326,7 +326,7 @@ body {
   height: 20px;
   background: var(--green);
   border-radius: 50%;
-  position: absolute;
+    position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
   transition: left 0.15s ease;
@@ -491,6 +491,73 @@ body {
   font-weight: 600;
 }
 
+.patient-summary {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 40, 100, 0.12);
+  border: 1px solid rgba(0, 120, 255, 0.15);
+  border-radius: 12px;
+}
+
+.patient-summary h4 {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2a5a8a;
+  margin: 0 0 0.65rem;
+}
+
+.reported-symptoms {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.negated-line {
+  margin: 0.65rem 0 0;
+  font-size: 0.8rem;
+  color: rgba(160, 200, 240, 0.75);
+  line-height: 1.5;
+}
+
+.negated-label {
+  color: #2a5a8a;
+  font-weight: 600;
+}
+
+.conv-box {
+  margin-top: 0.85rem;
+}
+
+.conv-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2a5a8a;
+  margin-bottom: 0.4rem;
+}
+
+.conv-text {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 120, 255, 0.12);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--text-bright);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: inherit;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
 .conditions,
 .clarification {
   margin-top: 1rem;
@@ -513,6 +580,82 @@ body {
   font-size: 0.85rem;
   color: var(--text);
   line-height: 1.6;
+}
+
+.followup-reply {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 120, 255, 0.12);
+}
+
+.followup-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2a5a8a;
+  margin-bottom: 0.45rem;
+}
+
+.followup-textarea {
+      width: 100%;
+  padding: 0.65rem 0.85rem;
+  background: rgba(0, 20, 50, 0.6);
+  border: 1px solid rgba(0, 120, 255, 0.25);
+  border-radius: 10px;
+  color: var(--text-bright);
+  font-size: 0.88rem;
+  font-family: inherit;
+  line-height: 1.45;
+  resize: vertical;
+  min-height: 72px;
+}
+
+.followup-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.followup-textarea:disabled {
+  opacity: 0.65;
+}
+
+.followup-error {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: var(--red);
+}
+
+.btn-followup {
+  margin-top: 0.65rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: rgba(0, 120, 255, 0.15);
+  border: 1px solid rgba(0, 120, 255, 0.45);
+  border-radius: 10px;
+  color: var(--text-bright);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-followup:hover:not(:disabled) {
+  background: rgba(0, 120, 255, 0.28);
+  border-color: var(--accent);
+}
+
+.btn-followup:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.followup-meta {
+  margin: 0.5rem 0 0;
+  font-size: 0.72rem;
+  color: #2a5a8a;
 }
 
 .disclaimer {

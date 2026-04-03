@@ -420,6 +420,7 @@ def analyze(req: AnalyzeRequest):
     }
     _update_session(sid, session_payload)
     log.info("[ANALYZE] session=%s triage=%s", sid[:8], out.get("triage_recommendation"))
+    out["patient_conversation"] = req.conversation
     return out
 
 # clarifying_questions = active queue
@@ -508,6 +509,7 @@ def analyze_continue(req: ContinueRequest):
         "possible_conditions": out.get("possible_conditions", []),
     }
     _update_session(req.session_id, s)
+    out["patient_conversation"] = combined
     return out
 
 

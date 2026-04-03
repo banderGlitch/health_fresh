@@ -19,6 +19,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [followUpAnswer, setFollowUpAnswer] = useState("");
+  const [followUpLoading, setFollowUpLoading] = useState(false);
+  const [followUpError, setFollowUpError] = useState(null);
 
   const toggleSymptom = (sym) => {
     setSelectedSymptoms((prev) =>
@@ -40,6 +43,8 @@ function App() {
     }
     setError(null);
     setResult(null);
+    setFollowUpAnswer("");
+    setFollowUpError(null);
     setLoading(true);
 
     try {
@@ -63,11 +68,53 @@ function App() {
     }
   };
 
+  const canAnswerFollowUp =
+    Boolean(result?.session_id) &&
+    (result?.llm_clarification?.clarifying_questions?.length ?? 0) > 0 &&
+    result?.conversation_status !== "completed";
+
+  const handleFollowUpSubmit = async () => {
+    const text = followUpAnswer.trim();
+    if (!text || !result?.session_id) return;
+    setFollowUpError(null);
+    setFollowUpLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/analyze/continue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: result.session_id,
+          answers: text,
+        }),
+      });
+      if (!res.ok) {
+        if (res.status === 404) {
+          throw new Error("Session expired. Click Analyze again to start over.");
+        }
+        throw new Error(`API error: ${res.status}`);
+      }
+      const data = await res.json();
+      setResult(data);
+      setFollowUpAnswer("");
+    } catch (err) {
+      setFollowUpError(err.message || "Could not send your answer.");
+    } finally {
+      setFollowUpLoading(false);
+    }
+  };
+
   const triage = result?.triage_recommendation;
   const riskScore = result?.risk_score ?? 0;
   const confidence = result?.confidence ?? 0;
   const isOTC = triage === "OTC Drug";
   const isDoctor = triage === "Doctor Consultation";
+
+  const formatSymptomLine = (s) => {
+    const bits = [s?.name].filter(Boolean);
+    if (s?.duration) bits.push(`Duration: ${s.duration}`);
+    if (s?.severity) bits.push(`Severity: ${s.severity}`);
+    return bits.join(" · ");
+  };
 
   return (
     <div className="app">
@@ -100,7 +147,7 @@ function App() {
                 <h3>{category}</h3>
                 <div className="symptom-grid">
                   {symptoms.map((sym) => (
-                    <button
+        <button
                       key={sym}
                       type="button"
                       className={`symptom-chip ${selectedSymptoms.includes(sym) ? "selected" : ""}`}
@@ -108,10 +155,10 @@ function App() {
                     >
                       <span className="dot" />
                       {sym}
-                    </button>
+        </button>
                   ))}
                 </div>
-              </div>
+        </div>
             ))}
 
             <div className="form-row">
@@ -238,6 +285,33 @@ function App() {
                   </div>
                 </div>
 
+                {(result.patient_conversation ||
+                  (result.symptoms?.length ?? 0) > 0 ||
+                  (result.negated?.length ?? 0) > 0) && (
+                  <div className="patient-summary">
+                    <h4>What you reported</h4>
+                    {result.symptoms?.length > 0 && (
+                      <ul className="reported-symptoms">
+                        {result.symptoms.map((s, i) => (
+                          <li key={i}>{formatSymptomLine(s)}</li>
+                        ))}
+                      </ul>
+                    )}
+                    {result.negated?.length > 0 && (
+                      <p className="negated-line">
+                        <span className="negated-label">Not reported: </span>
+                        {result.negated.join(", ")}
+                      </p>
+                    )}
+                    {result.patient_conversation && (
+                      <div className="conv-box">
+                        <span className="conv-label">Full conversation (as analyzed)</span>
+                        <pre className="conv-text">{result.patient_conversation}</pre>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {result.possible_conditions?.length > 0 && (
                   <div className="conditions">
                     <h4>Possible conditions</h4>
@@ -258,7 +332,43 @@ function App() {
                           <li key={i}>{q}</li>
                         )
                       )}
-                    </ul>
+          </ul>
+                    {canAnswerFollowUp && (
+                      <div className="followup-reply">
+                        <label className="followup-label" htmlFor="followup-answer">
+                          Your answer
+                        </label>
+                        <textarea
+                          id="followup-answer"
+                          className="followup-textarea"
+                          rows={3}
+                          placeholder="Type your answer here…"
+                          value={followUpAnswer}
+                          onChange={(e) => setFollowUpAnswer(e.target.value)}
+                          disabled={followUpLoading}
+                        />
+                        {followUpError && (
+                          <div className="followup-error">{followUpError}</div>
+                        )}
+                        <button
+                          type="button"
+                          className="btn-followup"
+                          onClick={handleFollowUpSubmit}
+                          disabled={
+                            followUpLoading || !followUpAnswer.trim()
+                          }
+                        >
+                          {followUpLoading ? "Sending…" : "Submit answer"}
+                        </button>
+                        {result.conversation_round != null &&
+                          result.max_rounds != null && (
+                            <p className="followup-meta">
+                              Round {result.conversation_round} of{" "}
+                              {result.max_rounds}
+                            </p>
+                          )}
+                      </div>
+                    )}
                   </div>
                 )}
 
