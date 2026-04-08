@@ -46,6 +46,32 @@ def _age_group(a: int) -> int:
     return 0 if a < 18 else 1 if a < 40 else 2 if a < 60 else 3
 
 
+def _fill_severity_from_conversation(conversation: str | None, sevs: list) -> list:
+    """When NER leaves severities empty, use 'Severity: mild' style phrases from the raw text."""
+    if not conversation or not sevs:
+        return sevs
+    if any(s is not None and str(s).strip() for s in sevs):
+        return sevs
+    m = re.search(r"severity\s*:\s*(mild|moderate|severe)\b", conversation, re.I)
+    if not m:
+        return sevs
+    g = m.group(1).lower()
+    return [g] * len(sevs)
+
+
+def _fill_duration_from_conversation(conversation: str | None, durs: list) -> list:
+    """When per-symptom durations are empty, use 'Duration: …' from the patient message."""
+    if not conversation or not durs:
+        return durs
+    if any(d is not None and str(d).strip() for d in durs):
+        return durs
+    m = re.search(r"duration\s*:\s*([^\n.]+)", conversation, re.I)
+    if not m:
+        return durs
+    phrase = m.group(1).strip().rstrip(",")
+    return [phrase] * len(durs)
+
+
 def _has(d: dict, h: dict, w: str) -> bool:
     w = w.lower()
     for dct in (d or {}, h or {}):
@@ -64,6 +90,7 @@ class FeatureBuilder:
         extraction_dict: dict | None = None,
         demographics: dict | None = None,
         history: dict | None = None,
+        conversation: str | None = None,
     ) -> dict[str, Any]:
         dem, hist = demographics or {}, history or {}
         syms = (extraction_dict or {}).get("symptoms") or mapped_symptoms
@@ -75,6 +102,8 @@ class FeatureBuilder:
         codes = [s.get("snomed_code") for s in mapped_symptoms if s.get("snomed_code")]
         sevs = [s.get("severity") for s in syms]
         durs = [s.get("duration") for s in syms]
+        sevs = _fill_severity_from_conversation(conversation, sevs)
+        durs = _fill_duration_from_conversation(conversation, durs)
 
         sev_vals = [SEVERITY_ENCODING.get(s, 0.5) for s in sevs if s]
         max_sev = max(sev_vals) if sev_vals else 0.5

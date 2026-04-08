@@ -41,7 +41,7 @@ class MongoSessionStore:
     def __init__(
         self,
         mongo_uri: str | None = None,
-        db_name: str = "cepialabs_healthcare",
+        db_name: str = "ai_analyzer_healthcare",
         collection_name: str = "sessions",
     ):
         self.mongo_uri = (

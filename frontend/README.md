@@ -28,4 +28,4 @@ React frontend for the RAG-powered symptom triage system. Uses only **model-opti
 
 ## API
 
-The frontend proxies `/api` to `http://127.0.0.1:8002` in development.
+Copy `frontend/.env.example` to `frontend/.env` and set **`VITE_API_URL`** to match your API (same host/port as `uvicorn`, e.g. `http://127.0.0.1:8005`). In development, requests go to `/api` and Vite proxies them to that URL.

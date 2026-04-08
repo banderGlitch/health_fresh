@@ -70,12 +70,21 @@ class AIAnalyzerPipeline:
         conversation: str,
         demographics: dict[str, Any] | None = None,
         history: dict[str, Any] | None = None,
+        patient_grounding_text: str | None = None,
     ) -> dict[str, Any]:
-        """Execute full pipeline and return final structured symptom profile."""
+        """Execute full pipeline and return final structured symptom profile.
+
+        patient_grounding_text: if set, symptoms must appear in this text (e.g. original message + answers).
+        Use when ``conversation`` is an LLM-merged narrative so invented symptoms are dropped.
+        """
         # --- Phase 1: NER extraction ---
         # Parse conversation; extract symptoms with name, duration, severity; detect negations (e.g. "no fever")
         extraction_result = self.extractor.extract(conversation)
         extraction_dict = self.extractor.to_dict(extraction_result)
+        if patient_grounding_text:
+            from .extraction.symptom_lexicon import ground_extraction_dict
+
+            extraction_dict = ground_extraction_dict(extraction_dict, patient_grounding_text)
 
         # Real-time log: NER extraction
         symptoms_list = extraction_dict.get("symptoms") or []
@@ -106,6 +115,7 @@ class AIAnalyzerPipeline:
             extraction_dict=extraction_dict,  # Full symptoms (incl. unmapped)
             demographics=demographics,
             history=history,
+            conversation=conversation,
         )
 
         # Real-time log: features (key fields for debugging)

@@ -1,1 +1,1 @@
-# CepiaLabs AI-Analyzer - Medical Diagnosis Pipeline
+# AI-Analyzer — Medical Diagnosis Pipeline

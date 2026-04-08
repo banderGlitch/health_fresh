@@ -3,6 +3,7 @@ FastAPI: AI-Analyzer medical triage pipeline.
 POST /analyze, POST /analyze/continue, POST /extract, GET /health
 """
 
+import copy
 import logging
 import re
 import sys
@@ -32,10 +33,13 @@ except ImportError:
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
 from src.pipeline import AIAnalyzerPipeline
 from src.extraction import MLNERExtractor
+from src.extraction.symptom_lexicon import ground_extraction_dict
 from src.llm_reasoning import LLMReasoner
 try:
     from src.storage import MongoSessionStore
@@ -43,22 +47,45 @@ except Exception:
     MongoSessionStore = None  # type: ignore[assignment]
 
 app = FastAPI(title="AI-Analyzer", description="Medical triage pipeline")
+
+
+@app.get("/")
+def root():
+    """Browser-friendly: base URL opens API docs instead of 404."""
+    return RedirectResponse(url="/docs")
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:4173",
+        "http://127.0.0.1:4173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 log = logging.getLogger("api.main")
 pipeline = AIAnalyzerPipeline()
 llm = LLMReasoner()
 extractor = MLNERExtractor()
-# Local in-memory fallback (kept for reference, intentionally disabled):
-# sessions: dict[str, dict[str, Any]] = {}
 session_store = None
+_mongo_init_error: str | None = None
 if MongoSessionStore:
     try:
         session_store = MongoSessionStore()
     except Exception as e:
-        log.warning("Mongo session store unavailable (in-memory fallback disabled): %s", e)
+        _mongo_init_error = str(e)
+        log.warning("MongoDB session store unavailable; using in-memory sessions: %s", e)
+
+# Used when MongoDB is not configured or connection fails (local dev / demos).
+_sessions_memory: dict[str, dict[str, Any]] = {}
 
 
 def _session_backend_name() -> str:
-    return "mongodb" if session_store else "mongodb-unavailable"
+    return "mongodb" if session_store else "memory"
 
 MAX_FOLLOWUP_QUESTIONS = 2  # Cap at 2; LLM instructed to ask 1-2 only
 MAX_ROUNDS = 4
@@ -81,38 +108,54 @@ _EMERGENCY_SYMPTOMS = {
 
 def _create_session(session_id: str, payload: dict[str, Any]) -> None:
     if session_store:
-        session_store.create_session(session_id, payload)
-        return
-    # Local fallback disabled on purpose:
-    # sessions[session_id] = payload
-    raise RuntimeError("MongoDB session store is not available")
+        try:
+            session_store.create_session(session_id, payload)
+            return
+        except Exception as e:
+            log.warning(
+                "MongoDB create_session failed; using in-memory for session %s: %s",
+                session_id[:8],
+                e,
+            )
+    _sessions_memory[session_id] = copy.deepcopy(payload)
 
 
 def _get_session(session_id: str) -> dict[str, Any] | None:
     if session_store:
-        return session_store.get_session(session_id)
-    # Local fallback disabled on purpose:
-    # return sessions.get(session_id)
-    raise RuntimeError("MongoDB session store is not available")
+        try:
+            doc = session_store.get_session(session_id)
+            if doc is not None:
+                return doc
+        except Exception as e:
+            log.warning("MongoDB get_session failed: %s", e)
+    return _sessions_memory.get(session_id)
 
 
 def _update_session(session_id: str, payload: dict[str, Any]) -> None:
     if session_store:
-        session_store.update_session(session_id, payload)
-        return
-    # Local fallback disabled on purpose:
-    # sessions[session_id] = payload
-    raise RuntimeError("MongoDB session store is not available")
+        try:
+            session_store.update_session(session_id, payload)
+            return
+        except Exception as e:
+            log.warning(
+                "MongoDB update_session failed; using in-memory for session %s: %s",
+                session_id[:8],
+                e,
+            )
+    _sessions_memory[session_id] = copy.deepcopy(payload)
 
 
 def _delete_session(session_id: str) -> bool:
+    ok = False
     if session_store:
-        return session_store.delete_session(session_id)
-    # Local fallback disabled on purpose:
-    # if session_id in sessions:
-    #     del sessions[session_id]
-    #     return True
-    return False
+        try:
+            ok = session_store.delete_session(session_id)
+        except Exception as e:
+            log.warning("MongoDB delete_session failed: %s", e)
+    if session_id in _sessions_memory:
+        del _sessions_memory[session_id]
+        return True
+    return ok
 
 
 def _extract_demographics_from_text(text: str, existing: dict[str, Any]) -> dict[str, Any]:
@@ -341,6 +384,8 @@ def startup():
     print(f"[AI-Analyzer] LLM: {'configured' if llm.client else 'NOT configured (set API key in .env)'}")
     backend = _session_backend_name()
     print(f"[AI-Analyzer] Session store: {backend}")
+    if backend == "memory" and _mongo_init_error:
+        print(f"[AI-Analyzer] MongoDB not connected: {_mongo_init_error}")
     log.info("[SESSION_STORE] Active backend: %s", backend)
 
 
@@ -368,7 +413,9 @@ def analyze(req: AnalyzeRequest):
 
     # Step 1: collection pass (extract symptoms first, then decide whether full pipeline is needed).
     extraction_result = extractor.extract(req.conversation)
-    extraction_dict = extractor.to_dict(extraction_result)
+    extraction_dict = ground_extraction_dict(
+        extractor.to_dict(extraction_result), req.conversation
+    )
     emergency = _has_emergency_signal(extraction_dict)
     ready = _ready_for_full_pipeline(extraction_dict, initial_demographics)
 
@@ -378,6 +425,7 @@ def analyze(req: AnalyzeRequest):
             conversation=req.conversation,
             demographics=initial_demographics,
             history=req.history,
+            patient_grounding_text=req.conversation,
         )
         llm_qs = out.get("llm_clarification", {}).get("clarifying_questions", [])
         next_qs = _next_questions(llm_qs, initial_demographics, asked_questions=[])
@@ -436,7 +484,9 @@ def analyze_continue(req: ContinueRequest):
         raise HTTPException(404, "Session not found. Start with POST /analyze first.")
     s["round"] = int(s.get("round", 1)) + 1
     qs = s.get("clarifying_questions", [])
-    
+    # Text the patient actually typed (before merge). Used to drop invented symptoms from merged narrative.
+    patient_grounding = f"{s['conversation']}\n{req.answers}"
+
     if llm.client and qs:
         combined = llm.merge_clarification(s["conversation"], qs, req.answers)
     else:
@@ -448,7 +498,9 @@ def analyze_continue(req: ContinueRequest):
 
     # Collection pass on merged conversation.
     extraction_result = extractor.extract(combined)
-    extraction_dict = extractor.to_dict(extraction_result)
+    extraction_dict = ground_extraction_dict(
+        extractor.to_dict(extraction_result), patient_grounding
+    )
     emergency = _has_emergency_signal(extraction_dict)
     ready = _ready_for_full_pipeline(extraction_dict, updated_demographics)
     force_run = s["round"] >= MAX_ROUNDS
@@ -460,6 +512,7 @@ def analyze_continue(req: ContinueRequest):
             conversation=combined,
             demographics=updated_demographics,
             history=s.get("history"),
+            patient_grounding_text=patient_grounding,
         )
         llm_qs = out.get("llm_clarification", {}).get("clarifying_questions", [])
         next_qs = [] if s["round"] >= MAX_ROUNDS else _next_questions(llm_qs, updated_demographics, asked_questions)
@@ -527,9 +580,22 @@ def extract_phase1(req: ExtractRequest):
 
 @app.get("/health")
 def health():
-    return {
+    out: dict[str, Any] = {
         "status": "ok",
         "llm_configured": bool(llm.client),
         "ner_mode": pipeline.ner_mode,
+        "session_store": _session_backend_name(),
         "version": "2.1",
     }
+    # Helps debug why Atlas is not active without reading server logs (no secrets).
+    if _session_backend_name() == "memory" and _mongo_init_error:
+        err = _mongo_init_error
+        if "Missing MongoDB URI" in err:
+            out["session_store_hint"] = "Set MONGODB_URI or mongodb_uri in .env"
+        elif "pymongo" in err.lower() or "No module named" in err:
+            out["session_store_hint"] = "pip install pymongo"
+        elif "ServerSelectionTimeoutError" in err or "timed out" in err.lower():
+            out["session_store_hint"] = "Check network / Atlas IP allowlist (0.0.0.0/0 for dev)"
+        else:
+            out["session_store_hint"] = err[:200]
+    return out

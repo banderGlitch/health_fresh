@@ -147,7 +147,11 @@ Patient conversation: "{conversation}"
 Extracted symptoms: {symptoms}
 Negated (patient does NOT have): {negated}
 
-Risk assessment (from engine - do not modify): Severity={risk_output.get('Severity')}, RiskScore={risk_output.get('RiskScore')}
+Risk assessment (from engine — report faithfully, do not contradict extraction):
+- Severity={risk_output.get('Severity')} is CLINICAL SYMPTOM INTENSITY (from patient mild/moderate/severe), LOW/MODERATE/HIGH.
+- RiskScore={risk_output.get('RiskScore')} reflects how strongly similar cases point to doctor follow-up vs self-care; it is NOT the same number as symptom severity.
+- Triage={risk_output.get('triage_recommendation')}.
+If the patient said mild and short duration, do NOT claim the engine rated "symptom severity" as HIGH unless Severity above is HIGH.
 
 Respond in this exact JSON format only:
 {{"reasoning_summary": "your 2-3 sentence summary", "clarifying_questions": ["question 1"]}}"""
@@ -289,12 +293,13 @@ RULES:
 
 STRICT RULES:
 1. Link each answer to the right question: "3 days" → duration for symptoms, "mild"/"moderate"/"severe" → severity.
-2. Phrase explicitly: "fever and headache for 3 days", "mild severity", "runny nose for a week".
-3. Use exact words NER expects: symptom names (fever, headache, cough), duration ("3 days", "a week", "2 weeks"), severity ("mild", "moderate", "severe").
-4. One coherent paragraph. No bullets, no JSON, no "Summary:" or "The patient...". Just the narrative.
-5. Do NOT add diagnoses, suggestions, or questions. Only the merged symptom description.
+2. Include ONLY symptoms and details that appear in the Original conversation or in Patient answers below. Do NOT add cough, cold, runny nose, or any symptom the patient did not mention.
+3. Do NOT paraphrase into different symptoms (e.g. do not turn "feeling unwell" into cough or nasal symptoms unless the patient said those words).
+4. Phrase explicitly with duration and severity when the patient gave them.
+5. One coherent paragraph. No bullets, no JSON, no "Summary:" or "The patient...". Just the narrative.
+6. Do NOT add diagnoses, suggestions, or questions. Only merge what was actually said.
 
-Example output: "Patient has fever and mild headache for 3 days. Cough and runny nose for about a week. No other symptoms."
+Example (structure only — do not copy symptoms that are not in the inputs): "Fever and headache for 3 days. Mild severity."
 
 ---
 Original conversation:

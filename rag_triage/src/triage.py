@@ -42,6 +42,38 @@ def _severity_to_synapse(severity: str | None) -> str:
     return "Moderate"
 
 
+def _clinical_severity_label_from_features(features: dict[str, Any]) -> str:
+    """
+    Map extracted per-symptom severities to LOW / MODERATE / HIGH for API `Severity`.
+
+    This must NOT be confused with triage outcome (Doctor vs OTC) or RiskScore:
+    those reflect similar-case retrieval; Severity reflects what the patient reported
+    for symptom intensity (mild / moderate / severe).
+    """
+    sevs = [str(s).strip().lower() for s in (features.get("severities") or []) if s]
+    if not sevs:
+        return "MODERATE"
+    rank = {"mild": 0, "moderate": 1, "severe": 2, "low": 0, "high": 2}
+    worst = max(rank.get(s, 1) for s in sevs)
+    if worst >= 2:
+        return "HIGH"
+    if worst == 0:
+        return "LOW"
+    return "MODERATE"
+
+
+def _clinical_severity_from_kw(severity: str | None) -> str:
+    """When no feature dict (tests), map a single severity hint."""
+    if not severity:
+        return "MODERATE"
+    s = str(severity).strip().lower()
+    if s in ("mild", "low"):
+        return "LOW"
+    if s in ("severe", "high"):
+        return "HIGH"
+    return "MODERATE"
+
+
 def _build_query(
     symptom_text: str,
     age: int | None = None,
@@ -100,8 +132,10 @@ class RAGTriagePredictor:
             acute = features.get("acute_flag", 0) or acute
             sevs = features.get("severities") or []
             severity = sevs[0] if sevs else severity
+            clinical_severity = _clinical_severity_label_from_features(features)
         else:
             symptom_text = symptom_text or "general discomfort"
+            clinical_severity = _clinical_severity_from_kw(severity)
 
         query = _build_query(symptom_text, age, gender, duration_days, severity, acute)
         results = self._retriever.retrieve(query, top_k=self._top_k)
@@ -135,7 +169,7 @@ class RAGTriagePredictor:
 
         return {
             "RiskScore": round(risk, 2),
-            "Severity": sev_label,
+            "Severity": clinical_severity,
             "Confidence": round(confidence, 2),
             "triage_recommendation": winner,
             "similar_cases": similar_cases,

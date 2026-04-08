@@ -1,27 +1,55 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   SYMPTOMS_BY_CATEGORY,
-  DURATIONS,
-  SEVERITIES,
+  ALLOWED_SYMPTOMS_FLAT,
 } from "./symptoms";
-import { FrequencySlider } from "./FrequencySlider";
 import "./App.css";
 
-const API_BASE = import.meta.env.DEV ? "/api" : "http://127.0.0.1:8002";
+function apiBase() {
+  if (import.meta.env.DEV) return "/api";
+  return import.meta.env.VITE_API_URL || "http://127.0.0.1:8001";
+}
+
+const API_BASE = apiBase();
+
+let _msgId = 0;
+const nid = () => `m-${++_msgId}-${Date.now()}`;
+
+const PLACEHOLDER_REASONING =
+  "Collecting more details before full risk scoring.";
+
+function isPlaceholderReasoning(text) {
+  const t = String(text || "").trim();
+  return !t || t === PLACEHOLDER_REASONING;
+}
+
+/** One assistant bubble per API turn — structured cards like the reference UI. */
+function buildAssistantMessages(result) {
+  return [{ id: nid(), role: "assistant", kind: "turn", result }];
+}
 
 function App() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [age, setAge] = useState(25);
-  const [frequency, setFrequency] = useState("Rarely");
   const [gender, setGender] = useState("male");
-  const [duration, setDuration] = useState(DURATIONS[0]);
-  const [severity, setSeverity] = useState(SEVERITIES[0]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [error, setError] = useState(null);
-  const [followUpAnswer, setFollowUpAnswer] = useState("");
+  const [composerText, setComposerText] = useState("");
   const [followUpLoading, setFollowUpLoading] = useState(false);
   const [followUpError, setFollowUpError] = useState(null);
+  const threadRef = useRef(null);
+
+  const scrollToBottom = () => {
+    const el = threadRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, loading, followUpLoading]);
 
   const toggleSymptom = (sym) => {
     setSelectedSymptoms((prev) =>
@@ -29,26 +57,25 @@ function App() {
     );
   };
 
+  /** Symptoms only — duration & severity are collected via assistant follow-up questions. */
   const buildConversation = () => {
     const syms = selectedSymptoms.join(", ");
-    const dur = duration.label;
-    const sev = severity.toLowerCase();
-    return `I have ${syms}. Duration: ${dur}. Severity: ${sev}.`;
+    return `I have ${syms}.`;
   };
 
-  const handleAnalyze = async () => {
-    if (selectedSymptoms.length === 0) {
-      setError("Please select at least one symptom.");
-      return;
-    }
-    setError(null);
+  const resetChat = () => {
+    setMessages([]);
     setResult(null);
-    setFollowUpAnswer("");
+    setComposerText("");
     setFollowUpError(null);
-    setLoading(true);
+    setError(null);
+    setSelectedSymptoms([]);
+  };
 
+  const runAnalyze = async (conversation) => {
+    setError(null);
+    setLoading(true);
     try {
-      const conversation = buildConversation();
       const res = await fetch(`${API_BASE}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,15 +84,67 @@ function App() {
           demographics: { age, gender },
         }),
       });
-
       if (!res.ok) throw new Error(`API error: ${res.status}`);
       const data = await res.json();
       setResult(data);
+      setMessages([
+        { id: nid(), role: "user", text: conversation },
+        ...buildAssistantMessages(data),
+      ]);
+      setComposerText("");
+      setDrawerOpen(false);
     } catch (err) {
-      setError(err.message || "Failed to analyze. Is the server running on port 8002?");
+      setError(
+        err.message ||
+          "Failed to reach the API. Check that uvicorn is running and VITE_API_URL matches its port."
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+  /** First turn: symptoms from chips only; optional notes. No duration/severity in the payload. */
+  const buildFirstTurnConversation = () => {
+    let conv = buildConversation();
+    const notes = composerText.trim();
+    if (notes) {
+      conv += ` Patient notes: ${notes}`;
+    }
+    return conv;
+  };
+
+  const handleStartConversation = async () => {
+    setFollowUpError(null);
+    if (selectedSymptoms.length === 0) {
+      setError(
+        "Choose one or more symptoms from the list in the chat (or in Symptoms & details)."
+      );
+      return;
+    }
+    const conversation = buildFirstTurnConversation();
+    resetChat();
+    await runAnalyze(conversation);
+  };
+
+  /** Panel: send structured line from chips (+ optional composer notes). */
+  const handlePanelSend = async () => {
+    setFollowUpError(null);
+    if (selectedSymptoms.length === 0) {
+      setError("Select at least one symptom in the panel.");
+      return;
+    }
+    const conversation = buildFirstTurnConversation();
+    resetChat();
+    await runAnalyze(conversation);
+  };
+
+  const applyChipsToComposer = () => {
+    if (selectedSymptoms.length === 0) {
+      setError("Select symptoms first.");
+      return;
+    }
+    setComposerText(buildConversation());
+    setError(null);
   };
 
   const canAnswerFollowUp =
@@ -73,41 +152,53 @@ function App() {
     (result?.llm_clarification?.clarifying_questions?.length ?? 0) > 0 &&
     result?.conversation_status !== "completed";
 
-  const handleFollowUpSubmit = async () => {
-    const text = followUpAnswer.trim();
-    if (!text || !result?.session_id) return;
-    setFollowUpError(null);
-    setFollowUpLoading(true);
-    try {
-      const res = await fetch(`${API_BASE}/analyze/continue`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          session_id: result.session_id,
-          answers: text,
-        }),
-      });
-      if (!res.ok) {
-        if (res.status === 404) {
-          throw new Error("Session expired. Click Analyze again to start over.");
+  const busy = loading || followUpLoading;
+
+  const handleComposerSend = async () => {
+    const text = composerText.trim();
+    if (busy) return;
+
+    if (result?.session_id && canAnswerFollowUp) {
+      setFollowUpError(null);
+      setFollowUpLoading(true);
+      try {
+        const res = await fetch(`${API_BASE}/analyze/continue`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            session_id: result.session_id,
+            answers: text,
+          }),
+        });
+        if (!res.ok) {
+          if (res.status === 404) {
+            throw new Error("Session expired. Start a new chat.");
+          }
+          throw new Error(`API error: ${res.status}`);
         }
-        throw new Error(`API error: ${res.status}`);
+        const data = await res.json();
+        setResult(data);
+        setMessages((prev) => [
+          ...prev,
+          { id: nid(), role: "user", text },
+          ...buildAssistantMessages(data),
+        ]);
+        setComposerText("");
+      } catch (err) {
+        setFollowUpError(err.message || "Could not send.");
+      } finally {
+        setFollowUpLoading(false);
       }
-      const data = await res.json();
-      setResult(data);
-      setFollowUpAnswer("");
-    } catch (err) {
-      setFollowUpError(err.message || "Could not send your answer.");
-    } finally {
-      setFollowUpLoading(false);
+      return;
     }
+
+    await handleStartConversation();
   };
 
-  const triage = result?.triage_recommendation;
-  const riskScore = result?.risk_score ?? 0;
-  const confidence = result?.confidence ?? 0;
-  const isOTC = triage === "OTC Drug";
-  const isDoctor = triage === "Doctor Consultation";
+  const composerEnabled =
+    !busy &&
+    (canAnswerFollowUp ||
+      (!result?.session_id && messages.length === 0));
 
   const formatSymptomLine = (s) => {
     const bits = [s?.name].filter(Boolean);
@@ -116,272 +207,449 @@ function App() {
     return bits.join(" · ");
   };
 
+  const triageTone = (triage) => {
+    if (triage === "Emergency" || triage === "Doctor Consultation") return "high";
+    if (triage === "OTC Drug") return "low";
+    return "medium";
+  };
+
+  const triageLead = (triage) => {
+    if (triage === "OTC Drug")
+      return "Over-the-counter options may be appropriate; keep monitoring how you feel.";
+    if (triage === "Doctor Consultation")
+      return "In-person or urgent medical evaluation is the recommended next step.";
+    if (triage === "Emergency")
+      return "Serious symptoms may be present — seek emergency care if appropriate.";
+    return "Continue to share details so we can refine this assessment.";
+  };
+
+  const renderAssistantTurn = (msg) => {
+    const r = msg.result;
+    const reasoning = r?.llm_clarification?.reasoning_summary;
+    const hasRichReasoning = !isPlaceholderReasoning(reasoning);
+    const analysisText = hasRichReasoning
+      ? String(reasoning).trim()
+      : "We're reviewing what you shared and may ask follow-up questions to narrow things down.";
+
+    const triage = r?.triage_recommendation;
+    const riskScore = r?.risk_score;
+    const confidence = r?.confidence;
+    const hasNumericRisk =
+      riskScore != null && !Number.isNaN(Number(riskScore));
+    const hasNumericConf =
+      confidence != null && !Number.isNaN(Number(confidence));
+    const collectionOnly = Boolean(r?.collection_only);
+    const conditions = r?.possible_conditions || [];
+    const qs = r?.llm_clarification?.clarifying_questions || [];
+    const hasRecorded =
+      (r?.symptoms?.length ?? 0) > 0 || (r?.negated?.length ?? 0) > 0;
+    const tone = triageTone(triage);
+
+    return (
+      <div key={msg.id} className="chat-row assistant">
+        <div className="chat-avatar" aria-hidden>
+          ⚕️
+        </div>
+        <div className="assistant-turn">
+          <div className="at-block at-analysis">
+            <p className="at-analysis-text">{analysisText}</p>
+            {r?.help_message && (
+              <p className="at-help-banner">{r.help_message}</p>
+            )}
+          </div>
+
+          {hasRecorded && (
+            <section className="at-card at-card-recorded" aria-label="What we recorded">
+              <div className="at-card-head">
+                <span className="at-card-icon" aria-hidden>
+                  📋
+                </span>
+                <h3 className="at-card-title">What we recorded</h3>
+              </div>
+              {r.symptoms?.length > 0 && (
+                <ul className="at-list">
+                  {r.symptoms.map((s, i) => (
+                    <li key={i}>{formatSymptomLine(s)}</li>
+                  ))}
+                </ul>
+              )}
+              {r.negated?.length > 0 && (
+                <p className="at-negated">
+                  <strong>Not reported:</strong> {r.negated.join(", ")}
+                </p>
+              )}
+            </section>
+          )}
+
+          {conditions.length > 0 && (
+            <section className="at-card at-card-conditions" aria-label="Possible conditions">
+              <div className="at-card-head">
+                <span className="at-card-icon" aria-hidden>
+                  🔎
+                </span>
+                <h3 className="at-card-title">Possible conditions</h3>
+              </div>
+              <p className="at-card-lead">
+                Based on current information (not a diagnosis):
+              </p>
+              <ul className="at-list at-conditions-list">
+                {conditions.map((c, i) => (
+                  <li key={i}>{c}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {!collectionOnly && triage && (
+            <section
+              className={`at-card at-card-outcome triage-${tone}`}
+              aria-label="Recommended next step"
+            >
+              <div className="at-card-head">
+                <span className="at-card-icon" aria-hidden>
+                  ⚕️
+                </span>
+                <h3 className="at-card-title">Outcome &amp; next step</h3>
+              </div>
+              <div className="outcome-badge">
+                {triage === "Doctor Consultation"
+                  ? "🔴"
+                  : triage === "OTC Drug"
+                    ? "🟢"
+                    : "🟡"}{" "}
+                <strong>{triage}</strong>
+              </div>
+              <p className="at-outcome-lead">{triageLead(triage)}</p>
+              <div className="at-meta-row">
+                {hasNumericRisk && (
+                  <span>Risk score: {(Number(riskScore) * 100).toFixed(0)}%</span>
+                )}
+                {hasNumericConf && (
+                  <span>
+                    Model confidence: {(Number(confidence) * 100).toFixed(0)}%
+                  </span>
+                )}
+                {r?.severity && <span>Severity: {r.severity}</span>}
+              </div>
+            </section>
+          )}
+
+          {collectionOnly && (
+            <section className="at-card at-card-pending" aria-label="Status">
+              <div className="at-card-head">
+                <span className="at-card-icon" aria-hidden>
+                  ⏳
+                </span>
+                <h3 className="at-card-title">Still collecting details</h3>
+              </div>
+              <p className="at-pending-text">
+                Full risk scoring runs once we have enough structured symptoms
+                and answers. Share more below if asked.
+              </p>
+            </section>
+          )}
+
+          {qs.length > 0 && (
+            <section className="at-card at-card-questions" aria-label="Questions for you">
+              <div className="at-card-head">
+                <span className="at-card-icon at-icon-question" aria-hidden>
+                  ❓
+                </span>
+                <h3 className="at-card-title">Questions for you</h3>
+              </div>
+              {qs.map((q, i) => (
+                <p key={i} className="at-question-line">
+                  {q}
+                </p>
+              ))}
+            </section>
+          )}
+
+          <p className="at-disclaimer">
+            Informational only — not medical advice or a diagnosis. For
+            emergencies, call emergency services.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderMessage = (msg) => {
+    if (msg.role === "user") {
+      return (
+        <div key={msg.id} className="chat-row user">
+          <div className="chat-bubble user-bubble">
+            <p className="chat-text">{msg.text}</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (msg.kind === "turn") {
+      return renderAssistantTurn(msg);
+    }
+
+    return null;
+  };
+
+  const isFirstTurn = !result?.session_id && messages.length === 0;
+  const sendDisabled =
+    busy ||
+    (canAnswerFollowUp
+      ? !composerText.trim()
+      : isFirstTurn
+        ? selectedSymptoms.length === 0
+        : false);
+
   return (
-    <div className="app">
-      <nav className="topnav">
-        <div className="nav-left">
+    <div className="app chatbot-app">
+      <header className="chatbot-nav">
+        <div className="chatbot-nav-brand">
           <div className="nav-logo">⚕️</div>
           <div>
             <div className="nav-title">AI Triage</div>
-            <div className="nav-sub">RAG-Powered Symptom Assessment</div>
+            <div className="nav-sub">Chat assistant</div>
           </div>
         </div>
-        <div className="nav-badges">
-          <span className="badge badge-green">RAG</span>
-          <span className="badge badge-blue">SYNAPSE</span>
+        <div className="chatbot-nav-actions">
+          <button
+            type="button"
+            className="btn-nav"
+            onClick={() => setDrawerOpen(true)}
+          >
+            Symptoms &amp; details
+          </button>
+          <button type="button" className="btn-nav btn-nav-ghost" onClick={resetChat}>
+            New chat
+          </button>
         </div>
-      </nav>
+      </header>
 
-      <main className="main">
-        <div className="grid">
-          {/* Left: Symptoms */}
-          <section className="card">
-            <div className="card-header">
-              <span className="card-icon">🩺</span>
-              <h2>Select Symptoms</h2>
-              <p className="card-sub">Model-optimized list</p>
-            </div>
-
-            {Object.entries(SYMPTOMS_BY_CATEGORY).map(([category, symptoms]) => (
-              <div key={category} className="symptom-group">
-                <h3>{category}</h3>
-                <div className="symptom-grid">
-                  {symptoms.map((sym) => (
-        <button
-                      key={sym}
-                      type="button"
-                      className={`symptom-chip ${selectedSymptoms.includes(sym) ? "selected" : ""}`}
-                      onClick={() => toggleSymptom(sym)}
-                    >
-                      <span className="dot" />
-                      {sym}
-        </button>
-                  ))}
-                </div>
-        </div>
-            ))}
-
-            <div className="form-row">
-              <label>
-                <span>Duration</span>
-                <select
-                  value={duration.label}
-                  onChange={(e) =>
-                    setDuration(DURATIONS.find((d) => d.label === e.target.value))
-                  }
-                >
-                  {DURATIONS.map((d) => (
-                    <option key={d.label} value={d.label}>
-                      {d.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Severity</span>
-                <select
-                  value={severity}
-                  onChange={(e) => setSeverity(e.target.value)}
-                >
-                  {SEVERITIES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-
-            <div className="form-row full">
-              <label>
-                <span>Frequency</span>
-                <FrequencySlider value={frequency} onChange={setFrequency} />
-              </label>
-            </div>
-
-            <div className="form-row">
-              <label>
-                <span>Age</span>
-                <input
-                  type="number"
-                  min={1}
-                  max={120}
-                  value={age}
-                  onChange={(e) => setAge(Number(e.target.value) || 25)}
-                />
-              </label>
-              <label>
-                <span>Gender</span>
-                <select
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </label>
-            </div>
-
-            {error && <div className="error">{error}</div>}
-
-            <button
-              className="btn-analyze"
-              onClick={handleAnalyze}
-              disabled={loading || selectedSymptoms.length === 0}
-            >
-              {loading ? "Analyzing…" : "Analyze"}
-            </button>
-
-            {selectedSymptoms.length > 0 && (
-              <p className="selected-count">
-                {selectedSymptoms.length} symptom(s) selected
-              </p>
-            )}
-          </section>
-
-          {/* Right: Result */}
-          <section className="card result-card">
-            <div className="card-header">
-              <span className="card-icon">📋</span>
-              <h2>Result</h2>
-            </div>
-
-            {!result && !loading && (
-              <div className="placeholder">
-                Select symptoms and click <strong>Analyze</strong> to get triage
-                recommendation.
+      <main className="chatbot-main">
+        <section className="chat-panel card">
+          <div className="chat-panel-head">
+            <div className="chat-bot-identity">
+              <span className="chat-bot-avatar" aria-hidden>
+                ⚕️
+              </span>
+              <div>
+                <h1 className="chat-bot-name">Triage assistant</h1>
+                <p className="chat-bot-status">
+                  {result?.conversation_round != null && result?.max_rounds != null
+                    ? `Round ${result.conversation_round} of ${result.max_rounds}`
+                    : "Online — pick symptoms; the assistant will ask for timing & severity"}
+                </p>
               </div>
+            </div>
+          </div>
+
+          <div className="chat-thread" ref={threadRef}>
+            {messages.length === 0 && !loading && (
+              <>
+                <div className="chat-row assistant">
+                  <div className="chat-avatar">⚕️</div>
+                  <div className="chat-bubble assistant-bubble chat-intro">
+                    <p className="chat-text">
+                      Hi — I’m your triage assistant.{" "}
+                      <strong>Tap the symptoms that apply</strong> (only these
+                      options are supported). Set age in{" "}
+                      <strong>Symptoms &amp; details</strong> if you like, then{" "}
+                      <strong>Send</strong>. I’ll ask how long it’s been and how
+                      bad it feels before we finish triage.
+                    </p>
+                  </div>
+                </div>
+                <div className="chat-symptom-picker" aria-label="Choose symptoms">
+                  <p className="picker-label">Symptoms you can select</p>
+                  <div className="symptom-pill-grid">
+                    {ALLOWED_SYMPTOMS_FLAT.map((sym) => (
+                      <button
+                        key={sym}
+                        type="button"
+                        className={`symptom-pill ${selectedSymptoms.includes(sym) ? "selected" : ""}`}
+                        onClick={() => toggleSymptom(sym)}
+                      >
+                        {sym}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
+
+            {messages.map((m) => renderMessage(m))}
 
             {loading && (
-              <div className="loading">
-                <div className="spinner" />
-                <p>Running AI pipeline…</p>
-              </div>
-            )}
-
-            {result && (
-              <div className="result-content">
-                <div
-                  className={`result-hero ${
-                    isDoctor ? "high" : isOTC ? "low" : "medium"
-                  }`}
-                >
-                  <div className="rh-badge">
-                    {isDoctor ? "🔴" : isOTC ? "🟢" : "🟡"}{" "}
-                    {triage || "Unknown"}
-                  </div>
-                  <div className="rh-action">
-                    {isOTC
-                      ? "Over-the-counter medication may help. Monitor symptoms."
-                      : isDoctor
-                        ? "Consult a doctor for proper evaluation."
-                        : "Seek medical advice if symptoms persist."}
-                  </div>
-                  <div className="rh-meta">
-                    <span>Risk: {(riskScore * 100).toFixed(0)}%</span>
-                    <span>Confidence: {(confidence * 100).toFixed(0)}%</span>
-                    <span>Severity: {result.severity || "—"}</span>
-                  </div>
-                </div>
-
-                {(result.patient_conversation ||
-                  (result.symptoms?.length ?? 0) > 0 ||
-                  (result.negated?.length ?? 0) > 0) && (
-                  <div className="patient-summary">
-                    <h4>What you reported</h4>
-                    {result.symptoms?.length > 0 && (
-                      <ul className="reported-symptoms">
-                        {result.symptoms.map((s, i) => (
-                          <li key={i}>{formatSymptomLine(s)}</li>
-                        ))}
-                      </ul>
-                    )}
-                    {result.negated?.length > 0 && (
-                      <p className="negated-line">
-                        <span className="negated-label">Not reported: </span>
-                        {result.negated.join(", ")}
-                      </p>
-                    )}
-                    {result.patient_conversation && (
-                      <div className="conv-box">
-                        <span className="conv-label">Full conversation (as analyzed)</span>
-                        <pre className="conv-text">{result.patient_conversation}</pre>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {result.possible_conditions?.length > 0 && (
-                  <div className="conditions">
-                    <h4>Possible conditions</h4>
-                    <ul>
-                      {result.possible_conditions.map((c, i) => (
-                        <li key={i}>{c}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {result.llm_clarification?.clarifying_questions?.length > 0 && (
-                  <div className="clarification">
-                    <h4>Follow-up questions</h4>
-                    <ul>
-                      {result.llm_clarification.clarifying_questions.map(
-                        (q, i) => (
-                          <li key={i}>{q}</li>
-                        )
-                      )}
-          </ul>
-                    {canAnswerFollowUp && (
-                      <div className="followup-reply">
-                        <label className="followup-label" htmlFor="followup-answer">
-                          Your answer
-                        </label>
-                        <textarea
-                          id="followup-answer"
-                          className="followup-textarea"
-                          rows={3}
-                          placeholder="Type your answer here…"
-                          value={followUpAnswer}
-                          onChange={(e) => setFollowUpAnswer(e.target.value)}
-                          disabled={followUpLoading}
-                        />
-                        {followUpError && (
-                          <div className="followup-error">{followUpError}</div>
-                        )}
-                        <button
-                          type="button"
-                          className="btn-followup"
-                          onClick={handleFollowUpSubmit}
-                          disabled={
-                            followUpLoading || !followUpAnswer.trim()
-                          }
-                        >
-                          {followUpLoading ? "Sending…" : "Submit answer"}
-                        </button>
-                        {result.conversation_round != null &&
-                          result.max_rounds != null && (
-                            <p className="followup-meta">
-                              Round {result.conversation_round} of{" "}
-                              {result.max_rounds}
-                            </p>
-                          )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="disclaimer">
-                  ⚠️ This is for informational purposes only. It does not replace
-                  professional medical advice. In emergencies, call emergency
-                  services.
+              <div className="chat-row assistant typing-row">
+                <div className="chat-avatar">⚕️</div>
+                <div className="typing-dots" aria-live="polite">
+                  <span />
+                  <span />
+                  <span />
                 </div>
               </div>
             )}
-          </section>
-        </div>
+
+            {followUpLoading && (
+              <div className="chat-row assistant typing-row">
+                <div className="chat-avatar">⚕️</div>
+                <div className="typing-dots" aria-live="polite">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {(error || followUpError) && (
+            <div className="composer-banner-error">
+              {error || followUpError}
+            </div>
+          )}
+
+          <div className="chat-composer chat-composer-sticky">
+            <div className="composer-inner">
+              <textarea
+                className="composer-input"
+                rows={2}
+                placeholder={
+                  canAnswerFollowUp
+                    ? "Reply to the assistant…"
+                    : result && !canAnswerFollowUp
+                      ? "This turn is done — New chat to start over, or wait for a follow-up."
+                      : "Optional notes (timing, context) — symptoms must be chosen above…"
+                }
+                value={composerText}
+                onChange={(e) => setComposerText(e.target.value)}
+                disabled={!composerEnabled}
+                onKeyDown={(e) => {
+                  if (
+                    e.key === "Enter" &&
+                    !e.shiftKey &&
+                    composerEnabled &&
+                    !sendDisabled
+                  ) {
+                    e.preventDefault();
+                    handleComposerSend();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="composer-send"
+                onClick={handleComposerSend}
+                disabled={sendDisabled}
+              >
+                {loading ? "…" : followUpLoading ? "…" : "Send"}
+              </button>
+            </div>
+            <p className="composer-hint">
+              {canAnswerFollowUp
+                ? "Enter to send · Shift+Enter for new line"
+                : messages.length === 0
+                  ? "Select symptoms, then Send. Don’t type duration/severity here — the assistant will ask."
+                  : !canAnswerFollowUp && messages.length > 0
+                    ? "Start a new chat to describe different symptoms."
+                    : ""}
+            </p>
+          </div>
+        </section>
       </main>
+
+      <div
+        className={`drawer-backdrop ${drawerOpen ? "open" : ""}`}
+        aria-hidden={!drawerOpen}
+        onClick={() => setDrawerOpen(false)}
+      />
+
+      <aside className={`symptom-drawer card ${drawerOpen ? "open" : ""}`}>
+        <div className="drawer-head">
+          <div className="drawer-head-text">
+            <h2>Symptoms &amp; details</h2>
+            <p className="drawer-sub">
+              Same symptom list as the chat. Duration and severity are not filled
+              here — the assistant asks you in chat. Age and gender help the
+              model.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="drawer-close"
+            onClick={() => setDrawerOpen(false)}
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="drawer-scroll">
+          {Object.entries(SYMPTOMS_BY_CATEGORY).map(([category, symptoms]) => (
+            <div key={category} className="symptom-group">
+              <h3>{category}</h3>
+              <div className="symptom-grid">
+                {symptoms.map((sym) => (
+                  <button
+                    key={sym}
+                    type="button"
+                    className={`symptom-chip ${selectedSymptoms.includes(sym) ? "selected" : ""}`}
+                    onClick={() => toggleSymptom(sym)}
+                  >
+                    <span className="dot" />
+                    {sym}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+
+          <div className="form-row">
+            <label>
+              <span>Age</span>
+              <input
+                type="number"
+                min={1}
+                max={120}
+                value={age}
+                onChange={(e) => setAge(Number(e.target.value) || 25)}
+              />
+            </label>
+            <label>
+              <span>Gender</span>
+              <select value={gender} onChange={(e) => setGender(e.target.value)}>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </label>
+          </div>
+
+          {error && <div className="error">{error}</div>}
+
+          <div className="drawer-actions">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={applyChipsToComposer}
+              disabled={selectedSymptoms.length === 0}
+            >
+              Paste symptoms into notes
+            </button>
+            <button
+              type="button"
+              className="btn-analyze"
+              onClick={handlePanelSend}
+              disabled={loading || selectedSymptoms.length === 0}
+            >
+              {loading ? "Sending…" : "Send from panel"}
+            </button>
+          </div>
+          {selectedSymptoms.length > 0 && (
+            <p className="selected-count">
+              {selectedSymptoms.length} symptom(s) selected
+            </p>
+          )}
+        </div>
+      </aside>
     </div>
   );
 }

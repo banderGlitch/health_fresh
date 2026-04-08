@@ -11,18 +11,15 @@ from typing import Any
 from ..llm_reasoning import LLMReasoner
 from .ner_extractor import ExtractedSymptom, ExtractionResult, NERExtractor, normalize_text, to_result_dict
 from .symptom_lexicon import SYMPTOM_LEXICON, get_canonical
+from .symptom_rag import rag_spans
 
 _VALID_SEVERITIES = {"mild", "moderate", "severe"}
 _NOISE_WORDS = {
     "a", "an", "and", "or", "on", "off", "of", "the", "to", "for", "with", "stairs",
 }
 
-_LEXICON_HELP_MESSAGE = (
-    "We currently support a limited set of symptoms. "
-    "Please describe your symptoms using common terms (e.g. 'sweating' instead of 'diaphoresis')."
-)
-
-# It is the model which detects the symptoms 
+# No canned help_message here — avoids repeating generic "limited symptoms" copy.
+# Collection-phase LLM (reasoner.classify_extraction_gap) can still guide the user when needed.
 
 class MLNERExtractor:
     """ML finds symptom spans; LLM enriches negation/severity/duration."""
@@ -273,10 +270,6 @@ Patient text: """
     # associated_factors=["shortness of breath","sweating"]
 # )
 
-    def _should_show_lexicon_help(self, text: str, symptom_count: int) -> bool:
-        """Show help when 0 symptoms extracted but input looks like symptom description."""
-        return symptom_count == 0 and len((text or "").strip()) > 15
-
     def extract(self, text: str) -> ExtractionResult:
         normalized_text = normalize_text(text)
         if not normalized_text:
@@ -287,8 +280,7 @@ Patient text: """
         try:
             ner = self.pipeline(text_for_extraction)
         except Exception:
-            msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, 0) else None
-            return ExtractionResult(symptoms=[], negated=[], help_message=msg)
+            return ExtractionResult(symptoms=[], negated=[], help_message=None)
 
         # Build spans from NER (or empty if NER returned nothing)
         spans = self._build_spans(text_for_extraction, ner) if ner else []
@@ -299,25 +291,33 @@ Patient text: """
             if name not in seen_names:
                 spans.append((name, start, end))
                 seen_names.add(name)
+        try:
+            for name, start, end in rag_spans(text_for_extraction):
+                if name not in seen_names:
+                    spans.append((name, start, end))
+                    seen_names.add(name)
+        except Exception:
+            pass
 
         if not spans:
-            msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, 0) else None
-            return ExtractionResult(symptoms=[], negated=[], help_message=msg)
+            return ExtractionResult(symptoms=[], negated=[], help_message=None)
 
         try:
             llm_result = self._enrich_with_llm(text_for_extraction, spans)
             if llm_result is not None:
                 symptoms = self._filter_symptoms_by_text(llm_result.symptoms, text_for_extraction)
-                msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, len(symptoms)) else None
-                return ExtractionResult(symptoms=symptoms, negated=llm_result.negated, help_message=msg)
+                if symptoms:
+                    return ExtractionResult(
+                        symptoms=symptoms, negated=llm_result.negated, help_message=None
+                    )
+                # LLM dropped all entities — fall through to rule-based build from spans
         except Exception:
             pass
 
         negated = self._rules.extract_negations(text_for_extraction)
         symptoms = self._rules.build_symptoms_from_spans(text_for_extraction, spans, negated)
         symptoms = self._filter_symptoms_by_text(symptoms, text_for_extraction)
-        msg = _LEXICON_HELP_MESSAGE if self._should_show_lexicon_help(normalized_text, len(symptoms)) else None
-        return ExtractionResult(symptoms=symptoms, negated=negated, help_message=msg)
+        return ExtractionResult(symptoms=symptoms, negated=negated, help_message=None)
 
     def to_dict(self, result: ExtractionResult) -> dict[str, Any]:
         return to_result_dict(result)

@@ -1,6 +1,8 @@
 # Environment
 .env
 .env.local
+frontend/.env
+frontend/.env.local
 venv/
 .venv/
 env/
@@ -28,9 +30,3 @@ Thumbs.db
 
 # Models (large files - 1.5GB, don't push)
 models/
-
-# Scripts, docs, tests, changelog
-scripts/
-docs/
-tests/
-CHANGELOG.md

@@ -1,75 +1,51 @@
 /**
- * Curated symptoms — only those the RAG/SYNAPSE model handles well.
- * Derived from SYNAPSE dataset and test_dataset_cases.py.
+ * Symptoms the backend NER can extract — every string must appear in
+ * `src/extraction/symptom_lexicon.py` (canonical name or a listed variation).
+ *
+ * The chat UI only allows picking from this set (no free-typed symptom lists).
  */
 export const SYMPTOMS_BY_CATEGORY = {
-  "General": [
+  General: [
     "fever",
     "headache",
-    "itching",
-    "flu like illness",
+    "chills",
     "feeling sick",
     "feeling tired",
-    "feeling unwell",
-    "chills",
+    "body ache",
+    "sweating",
+    "loss of appetite",
+    "insomnia",
+    "weight loss",
+    "joint pain",
+    "back pain",
+    "swelling",
   ],
-  "Respiratory": [
+  Respiratory: [
     "cough",
     "sore throat",
     "shortness of breath",
     "runny nose",
-    "sneezing",
     "coughing blood",
-    "whoop sound after coughing",
-    "pause in breathing",
   ],
-  "Abdominal": [
-    "abdominal pain",
-    "vomiting",
-    "constipation",
-    "diarrhea",
-    "bloating",
-  ],
-  "Chest & Heart": [
-    "chest pain",
-    "fast heart rate",
-    "feeling lightheaded",
-    "sensation of spinning",
-  ],
-  "Skin": [
-    "skin pain",
-    "skin color change",
-    "itchy skin rash",
-    "blotchy",
-    "skin redness",
-    "swelling skin",
-    "darkening of skin",
-    "red firm lumps",
-    "scaly patches with irregular borders",
-  ],
-  "Eyes & Vision": [
+  "Chest & heart": ["chest pain", "palpitations"],
+  Abdominal: ["abdominal pain", "vomiting", "diarrhea"],
+  "Neurological & senses": [
+    "dizziness",
     "blurred vision",
-    "sensitivity to light",
-    "seeing rainbows around lights",
+    "ear pain",
+    "eye pain",
   ],
-  "Urinary": ["blood urine", "painful urination"],
-  "Other": [
-    "neck pain",
-    "unwanted weight loss",
-    "lump on neck",
-    "hoarse voice",
-    "pain with swallowing",
-    "unexplained ear discomfort",
-    "pins needles feeling in fingers",
-    "pins needles feeling in toes",
-    "garlic odor in breath",
-    "abnormal hair growth",
-    "new purplish stretch marks",
-    "swelling leg",
-    "false beliefs",
-    "seeing hearing things not there",
-  ],
+  Skin: ["rash"],
+  Other: ["blood in stool"],
 };
+
+/** Flat list for inline pickers and validation (order: category order). */
+export const ALLOWED_SYMPTOMS_FLAT = Object.values(SYMPTOMS_BY_CATEGORY).flat();
+
+/** Set for quick membership checks */
+export const ALLOWED_SYMPTOM_SET = new Set(
+  ALLOWED_SYMPTOMS_FLAT.map((s) => s.toLowerCase())
+);
 
 export const DURATIONS = [
   { value: "2", label: "Less than 3 days", acute: true },
