@@ -1,4 +1,4 @@
-"""Build RAG index from SYNAPSE dataset. Run from rag_triage folder."""
+# """Build RAG index from SYNAPSE dataset. Run from rag_triage folder."""
 
 import sys
 from pathlib import Path
