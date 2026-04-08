@@ -12,6 +12,8 @@
 | Navaneeth Bulayi |
 | Manthan Soni |
 
+**4.2 · 3 month · Group 3**
+
 > **Disclaimer:** This software is for research and educational use. It is **not** a substitute for professional medical advice, diagnosis, or treatment.
 
 ---
