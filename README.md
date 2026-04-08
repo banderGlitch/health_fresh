@@ -127,7 +127,7 @@ docs/             Additional design / structure notes
 
 Full tree: [docs/PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md).
 
-**Remote reference:** [github.com/banderGlitch/healthcare](https://github.com/banderGlitch/healthcare)
+**Repositories:** [banderGlitch/health_fresh](https://github.com/banderGlitch/health_fresh) (primary) · [banderGlitch/healthcare](https://github.com/banderGlitch/healthcare)
 
 ---
 
